@@ -1,1 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barcode Generator</title>
 
+<!-- Barcode generator -->
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+<!-- Camera barcode scanner -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<style>
+  :root {
+    --bg: #171918;
+    --card: #242827;
+    --card-2: #2b302e;
+    --input: #1d211f;
+    --border: #3d4441;
+    --text: #f1f3f2;
+    --muted: #929b96;
+    --accent: #79c77d;
+    --accent-hover: #67b66b;
+    --danger: #e36b76;
+    --barcode-bg: #fff;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 28px 16px 100px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background:
+      radial-gradient(circle at top, #303633 0%, var(--bg) 45%);
+    color: var(--text);
+  }
+
+  .app {
+    width: min(520px, 100%);
+    margin: auto;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 25px;
+    letter-spacing: -0.5px;
+  }
+
+  .header p {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* Main generator card */
+
+  .generator-card {
+    background: rgba(36, 40, 39, 0.96);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow:
+      0 25px 60px rgba(0, 0, 0, 0.35),
+      inset 0 1px rgba(255,255,255,0.035);
+  }
+
+  label {
+    display: block;
+    margin: 0 0 7px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+
+  input {
+    width: 100%;
+    height: 46px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    outline: none;
+    background: var(--input);
+    color: var(--text);
+    padding: 0 13px;
+    font-size: 15px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(121, 199, 125, 0.1);
+  }
+
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .code-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .code-row input {
+    flex: 1;
+  }
+
+  .scan-button {
+    flex-shrink: 0;
+    height: 46px;
+    padding: 0 15px;
+    border: 1px solid #4a524e;
+    border-radius: 11px;
+    background: var(--card-2);
+    color: white;
+    font-size: 14px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: 0.15s ease;
+  }
+
+  .scan-button:hover {
+    background: #353b38;
+    transform: translateY(-1px);
+  }
+
+  .scan-button:active {
+    transform: translateY(0);
+  }
+
+  /* Price buttons */
+
+  .price-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+  }
+
+  .price-button {
+    height: 43px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card-2);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: 0.15s ease;
+  }
+
+  .price-button:hover {
+    border-color: var(--accent);
+    background: #323936;
+  }
+
+  .price-button.active {
+    border-color: var(--accent);
+    background: rgba(121, 199, 125, 0.12);
+    color: var(--accent);
+  }
+
+  #customPriceContainer {
+    display: none;
+    margin-top: 10px;
+  }
+
+  .custom-price-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .custom-price-row input {
+    flex: 1;
+  }
+
+  .small-generate {
+    border: 0;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #102012;
+    padding: 0 16px;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  .small-generate:hover {
+    background: var(--accent-hover);
+  }
+
+  /* Generate button */
+
+  .generate-button {
+    width: 100%;
+    height: 48px;
+    margin-top: 4px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #102012;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 7px 20px rgba(121, 199, 125, 0.12);
+    transition: 0.15s ease;
+  }
+
+  .generate-button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+
+  .error {
+    display: none;
+    margin: 0 0 12px;
+    color: var(--danger);
+    font-size: 13px;
+  }
+
+  /* Saved barcodes */
+
+  .saved-title {
+    margin: 28px 0 10px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 1px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .empty {
+    padding: 28px 15px;
+    border: 1px dashed var(--border);
+    border-radius: 17px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .barcode-list {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  .barcode-card {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--card);
+    box-shadow:
+      0 12px 30px rgba(0,0,0,0.25),
+      inset 0 1px rgba(255,255,255,0.025);
+  }
+
+  .barcode-card-header {
+    padding: 14px 16px 9px;
+    text-align: center;
+  }
+
+  .barcode-label {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .barcode-data {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .barcode-frame {
+    margin: 0 12px;
+    padding: 15px 10px;
+    border-radius: 13px;
+    background: var(--barcode-bg);
+    text-align: center;
+  }
+
+  .barcode-frame svg {
+    display: block;
+    width: 100%;
+    max-width: 430px;
+    height: auto;
+    margin: auto;
+  }
+
+  .barcode-footer {
+    display: flex;
+    justify-content: center;
+    padding: 10px 15px 14px;
+  }
+
+  .delete-button {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--card-2);
+    color: var(--danger);
+    padding: 7px 13px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .delete-button:hover {
+    background: rgba(227,107,118,0.1);
+    border-color: var(--danger);
+  }
+
+  /* Floating plus */
+
+  .floating-add {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 50;
+
+    width: 58px;
+    height: 58px;
+
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50%;
+
+    background: var(--accent);
+    color: #102012;
+
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1;
+
+    cursor: pointer;
+
+    box-shadow:
+      0 12px 30px rgba(0,0,0,0.45),
+      0 4px 15px rgba(121,199,125,0.18);
+
+    transition: 0.15s ease;
+  }
+
+  .floating-add:hover {
+    transform: scale(1.06);
+    background: var(--accent-hover);
+  }
+
+  /* Scanner */
+
+  .scanner-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(9px);
+  }
+
+  .scanner-overlay.open {
+    display: flex;
+  }
+
+  .scanner-modal {
+    width: min(510px, 100%);
+    overflow: hidden;
+
+    border: 1px solid #444b48;
+    border-radius: 20px;
+
+    background: #292e2c;
+
+    box-shadow:
+      0 30px 90px rgba(0,0,0,0.7),
+      0 5px 20px rgba(0,0,0,0.35);
+  }
+
+  .scanner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+
+    padding: 17px;
+  }
+
+  .scanner-header h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .scanner-header p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .scanner-close {
+    width: 36px;
+    height: 36px;
+
+    border: 0;
+    border-radius: 10px;
+
+    background: #383e3b;
+    color: #ddd;
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+  }
+
+  .scanner-close:hover {
+    background: #464d49;
+  }
+
+  .scanner-camera-container {
+    position: relative;
+    overflow: hidden;
+    margin: 0 12px;
+    border-radius: 14px;
+    background: #000;
+  }
+
+  #barcodeScanner {
+    width: 100%;
+  }
+
+  #barcodeScanner video {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 280px;
+    object-fit: cover;
+  }
+
+  /* Hide the library's own UI */
+
+  #barcodeScanner__dashboard_section {
+    display: none !important;
+  }
+
+  #barcodeScanner__header_message {
+    display: none !important;
+  }
+
+  #barcodeScanner__scan_region {
+    border: 0 !important;
+  }
+
+  /* Scanner guide */
+
+  .scanner-target {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    top: 50%;
+
+    height: 105px;
+
+    transform: translateY(-50%);
+
+    border: 2px solid rgba(255,255,255,0.8);
+    border-radius: 10px;
+
+    pointer-events: none;
+
+    box-shadow:
+      0 0 0 9999px rgba(0,0,0,0.16);
+  }
+
+  .target-line {
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    top: 50%;
+
+    height: 2px;
+
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 9px rgba(255,255,255,0.75);
+  }
+
+  .scanner-status {
+    min-height: 18px;
+    padding: 12px 17px 16px;
+
+    text-align: center;
+
+    color: #aeb6b1;
+    font-size: 13px;
+  }
+
+  .scanner-status.success {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .scanner-status.error {
+    color: var(--danger);
+  }
+
+  .scanner-tip {
+    padding: 0 17px 16px;
+    color: #777f7b;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  @media (max-width: 430px) {
+    body {
+      padding-left: 11px;
+      padding-right: 11px;
+    }
+
+    .generator-card {
+      padding: 16px;
+    }
+
+    .price-buttons {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .floating-add {
+      right: 17px;
+      bottom: 17px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <h1>Barcode Generator</h1>
+    <p>Create and keep multiple barcodes in one place</p>
+  </div>
+
+  <div class="generator-card">
+
+    <!-- Label -->
+    <div class="field">
+      <label for="barcodeLabel">Label</label>
+      <input
+        type="text"
+        id="barcodeLabel"
+        placeholder="e.g. Warehouse Bin 4"
+        autocomplete="off"
+      >
+    </div>
+
+    <!-- Product code -->
+    <div class="field">
+      <label for="productCode">Product Code</label>
+
+      <div class="code-row">
+        <input
+          type="text"
+          id="productCode"
+          placeholder="Enter barcode number"
+          inputmode="numeric"
+          autocomplete="off"
+        >
+
+        <button
+          type="button"
+          id="scanButton"
+          class="scan-button"
+        >
+          📷 Scan
+        </button>
+      </div>
+    </div>
+
+    <!-- Price -->
+    <div class="field">
+      <label>Price</label>
+
+      <div class="price-buttons">
+        <button class="price-button" data-price="10">10p</button>
+        <button class="price-button" data-price="49">49p</button>
+        <button class="price-button" data-price="100">£1</button>
+        <button class="price-button" data-price="custom">Custom</button>
+      </div>
+
+      <div id="customPriceContainer">
+        <div class="custom-price-row">
+          <input
+            type="number"
+            id="price"
+            placeholder="Price in pence"
+            min="1"
+            max="999999"
+            inputmode="numeric"
+          >
+        </div>
+      </div>
+    </div>
+
+    <p class="error" id="error"></p>
+
+    <button
+      type="button"
+      class="generate-button"
+      id="generateButton"
+    >
+      Generate Barcode
+    </button>
+
+  </div>
+
+  <div class="saved-title">Saved Barcodes</div>
+
+  <div id="emptyState" class="empty">
+    No barcodes generated yet.
+  </div>
+
+  <div id="barcodeList" class="barcode-list"></div>
+
+</div>
+
+<!-- Floating new barcode button -->
+<button
+  type="button"
+  class="floating-add"
+  id="floatingAdd"
+  title="New barcode"
+>
+  +
+</button>
+
+
+<!-- =========================
+     CAMERA SCANNER
+========================= -->
+
+<div class="scanner-overlay" id="scannerOverlay">
+
+  <div class="scanner-modal">
+
+    <div class="scanner-header">
+
+      <div>
+        <h2>Scan Barcode</h2>
+        <p>EAN-8 and EAN-13 supported</p>
+      </div>
+
+      <button
+        type="button"
+        class="scanner-close"
+        id="closeScanner"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="scanner-camera-container">
+
+      <div id="barcodeScanner"></div>
+
+      <div class="scanner-target">
+        <div class="target-line"></div>
+      </div>
+
+    </div>
+
+    <div
+      class="scanner-status"
+      id="scannerStatus"
+    >
+      Starting camera…
+    </div>
+
+    <div class="scanner-tip">
+      Keep the barcode reasonably close, well lit and as flat as possible.
+      The scanner continuously retries difficult frames.
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+/* =========================================================
+   BARCODE GENERATOR
+========================================================= */
+
+function padLeft(str, length) {
+  return String(str).padStart(length, "0");
+}
+
+
+/*
+ * Calculates the final check digit for the numeric
+ * payload used by the original generator.
+ */
+function calculateCheckDigit(input) {
+
+  let sum = 0;
+
+  for (let i = 0; i < input.length; i++) {
+
+    const digit = parseInt(
+      input[input.length - 1 - i],
+      10
+    );
+
+    const weight = (i % 2 === 0) ? 3 : 1;
+
+    sum += digit * weight;
+  }
+
+  return (10 - (sum % 10)) % 10;
+}
+
+
+/*
+ * Price currently selected.
+ */
+let selectedPrice = null;
+
+
+/*
+ * Price buttons.
+ */
+document.querySelectorAll(".price-button").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    document.querySelectorAll(".price-button").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const value = button.dataset.price;
+
+    if (value === "custom") {
+
+      selectedPrice = null;
+
+      document.getElementById(
+        "customPriceContainer"
+      ).style.display = "block";
+
+    } else {
+
+      selectedPrice = Number(value);
+
+      document.getElementById(
+        "price"
+      ).value = value;
+
+      document.getElementById(
+        "customPriceContainer"
+      ).style.display = "none";
+    }
+  });
+
+});
+
+
+/*
+ * Main barcode generation.
+ */
+function generateBarcode() {
+
+  const productInput =
+    document.getElementById("productCode");
+
+  const labelInput =
+    document.getElementById("barcodeLabel");
+
+  const priceInput =
+    document.getElementById("price");
+
+  const error =
+    document.getElementById("error");
+
+  const rawProduct =
+    productInput.value.trim();
+
+  const label =
+    labelInput.value.trim();
+
+  let price;
+
+  if (selectedPrice !== null) {
+    price = selectedPrice;
+  } else {
+    price = Number(priceInput.value);
+  }
+
+
+  error.style.display = "none";
+  error.textContent = "";
+
+
+  /*
+   * Product code must contain digits.
+   */
+  const numericProduct =
+    rawProduct.replace(/\D/g, "");
+
+  if (!numericProduct || numericProduct.length < 8) {
+
+    error.textContent =
+      "Enter a valid product barcode.";
+
+    error.style.display = "block";
+
+    return;
+  }
+
+
+  /*
+   * Price is required.
+   */
+  if (
+    !Number.isFinite(price) ||
+    price < 1 ||
+    price > 999999
+  ) {
+
+    error.textContent =
+      "Enter a valid price in pence.";
+
+    error.style.display = "block";
+
+    return;
+  }
+
+
+  /*
+   * Keep the original generator's behaviour:
+   *
+   * 91 + 13 digit product + 6 digit price + check digit
+   */
+  let productDigits =
+    numericProduct.length === 14
+      ? numericProduct.slice(0, -1)
+      : numericProduct;
+
+  productDigits =
+    padLeft(productDigits, 13);
+
+  /*
+   * If somebody enters more than 13 digits,
+   * keep the first 13 to prevent the payload
+   * becoming unexpectedly long.
+   */
+  productDigits =
+    productDigits.slice(0, 13);
+
+  const paddedPrice =
+    padLeft(price, 6);
+
+  const baseNumber =
+    `91${productDigits}${paddedPrice}`;
+
+  const checkDigit =
+    calculateCheckDigit(baseNumber);
+
+  const fullBarcode =
+    `${baseNumber}${checkDigit}`;
+
+
+  /*
+   * Create a unique card.
+   */
+  const id =
+    "barcode-" +
+    Date.now() +
+    "-" +
+    Math.random()
+      .toString(36)
+      .slice(2, 8);
+
+
+  const list =
+    document.getElementById("barcodeList");
+
+  const card =
+    document.createElement("div");
+
+  card.className =
+    "barcode-card";
+
+  card.dataset.id = id;
+
+
+  /*
+   * Label is ONLY displayed as HTML.
+   * It is NOT included in fullBarcode.
+   */
+  const header =
+    document.createElement("div");
+
+  header.className =
+    "barcode-card-header";
+
+
+  const labelElement =
+    document.createElement("div");
+
+  labelElement.className =
+    "barcode-label";
+
+  labelElement.textContent =
+    label || "Untitled Barcode";
+
+
+  const dataElement =
+    document.createElement("div");
+
+  dataElement.className =
+    "barcode-data";
+
+  dataElement.textContent =
+    fullBarcode;
+
+
+  header.appendChild(labelElement);
+  header.appendChild(dataElement);
+
+
+  /*
+   * Barcode frame.
+   */
+  const frame =
+    document.createElement("div");
+
+  frame.className =
+    "barcode-frame";
+
+
+  const svg =
+    document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
+
+  svg.id = id + "-svg";
+
+  frame.appendChild(svg);
+
+
+  /*
+   * Footer.
+   */
+  const footer =
+    document.createElement("div");
+
+  footer.className =
+    "barcode-footer";
+
+
+  const deleteButton =
+    document.createElement("button");
+
+  deleteButton.type =
+    "button";
+
+  deleteButton.className =
+    "delete-button";
+
+  deleteButton.textContent =
+    "Remove";
+
+
+  deleteButton.addEventListener(
+    "click",
+    () => {
+
+      card.remove();
+
+      updateEmptyState();
+    }
+  );
+
+
+  footer.appendChild(deleteButton);
+
+
+  card.appendChild(header);
+  card.appendChild(frame);
+  card.appendChild(footer);
+
+  list.prepend(card);
+
+
+  /*
+   * Render CODE-128.
+   */
+  try {
+
+    JsBarcode(svg, fullBarcode, {
+
+      format: "CODE128",
+
+      displayValue: true,
+
+      fontSize: 16,
+
+      width: 2,
+
+      height: 85,
+
+      margin: 5,
+
+      background: "#ffffff",
+
+      lineColor: "#111111",
+
+      fontOptions: "bold"
+    });
+
+  } catch (err) {
+
+    console.error(
+      "Barcode rendering error:",
+      err
+    );
+
+    frame.innerHTML =
+      "<strong>Barcode rendering failed.</strong>";
+  }
+
+
+  /*
+   * Clear inputs ready for another barcode.
+   */
+  labelInput.value = "";
+  productInput.value = "";
+
+  /*
+   * Keep the selected price, which makes generating
+   * several barcodes of the same price faster.
+   */
+
+  document
+    .querySelectorAll(".price-button")
+    .forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+
+  updateEmptyState();
+
+
+  /*
+   * Scroll the newly generated barcode into view.
+   */
+  card.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+
+/*
+ * Generate button.
+ */
+document
+  .getElementById("generateButton")
+  .addEventListener(
+    "click",
+    generateBarcode
+  );
+
+
+/*
+ * Floating + button simply brings the user back
+ * to the generator.
+ */
+document
+  .getElementById("floatingAdd")
+  .addEventListener(
+    "click",
+    () => {
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+      setTimeout(() => {
+
+        document
+          .getElementById("barcodeLabel")
+          .focus();
+
+      }, 350);
+    }
+  );
+
+
+/*
+ * Empty-state visibility.
+ */
+function updateEmptyState() {
+
+  const list =
+    document.getElementById("barcodeList");
+
+  const empty =
+    document.getElementById("emptyState");
+
+  empty.style.display =
+    list.children.length === 0
+      ? "block"
+      : "none";
+}
+
+
+/* =========================================================
+   CAMERA BARCODE SCANNER
+========================================================= */
+
+let barcodeScanner = null;
+let scannerRunning = false;
+
+let lastScan = "";
+let lastScanTime = 0;
+
+
+const scanButton =
+  document.getElementById("scanButton");
+
+const scannerOverlay =
+  document.getElementById("scannerOverlay");
+
+const closeScanner =
+  document.getElementById("closeScanner");
+
+const scannerStatus =
+  document.getElementById("scannerStatus");
+
+
+/*
+ * Open scanner.
+ */
+function openScanner() {
+
+  scannerOverlay.classList.add("open");
+
+  scannerStatus.textContent =
+    "Starting camera…";
+
+  scannerStatus.className =
+    "scanner-status";
+
+  startBarcodeScanner();
+}
+
+
+/*
+ * Start the camera scanner.
+ */
+async function startBarcodeScanner() {
+
+  if (scannerRunning) {
+    return;
+  }
+
+  try {
+
+    barcodeScanner =
+      new Html5Qrcode("barcodeScanner");
+
+
+    /*
+     * Restrict detection to the formats we actually want.
+     *
+     * This is much better than asking the decoder to
+     * search for every barcode format.
+     */
+    const formats = [
+
+      Html5QrcodeSupportedFormats.EAN_13,
+
+      Html5QrcodeSupportedFormats.EAN_8
+    ];
+
+
+    const config = {
+
+      /*
+       * High frame rate gives the decoder lots of
+       * opportunities to catch difficult frames.
+       */
+      fps: 30,
+
+
+      /*
+       * Wide scanning region.
+       *
+       * EAN barcodes are horizontal, so giving the
+       * scanner a wide region is useful for bottles,
+       * packaging and slightly awkward angles.
+       */
+      qrbox: function(
+        viewfinderWidth,
+        viewfinderHeight
+      ) {
+
+        const width =
+          Math.floor(
+            viewfinderWidth * 0.92
+          );
+
+        const height =
+          Math.floor(
+            viewfinderHeight * 0.50
+          );
+
+        return {
+          width: width,
+          height: height
+        };
+      },
+
+
+      aspectRatio: 1.7777778,
+
+      formatsToSupport: formats,
+
+
+      /*
+       * Use the browser's native BarcodeDetector
+       * where supported.
+       */
+      experimentalFeatures: {
+        useBarCodeDetectorIfSupported: true
+      }
+    };
+
+
+    /*
+     * Prefer the rear camera.
+     */
+    await barcodeScanner.start(
+
+      {
+        facingMode: {
+          ideal: "environment"
+        }
+      },
+
+      config,
+
+      handleBarcodeDetected,
+
+      /*
+       * Failed individual frames are ignored.
+       * The scanner keeps trying continuously.
+       */
+      () => {}
+    );
+
+
+    scannerRunning = true;
+
+    scannerStatus.textContent =
+      "Point the barcode towards the camera…";
+
+
+    /*
+     * Try to enable continuous autofocus.
+     *
+     * This can significantly help with bottles and
+     * other packaging where the barcode moves in/out
+     * of focus.
+     */
+    try {
+
+      const video =
+        document.querySelector(
+          "#barcodeScanner video"
+        );
+
+      if (
+        video &&
+        video.srcObject
+      ) {
+
+        const tracks =
+          video.srcObject.getVideoTracks();
+
+        if (tracks.length) {
+
+          const track =
+            tracks[0];
+
+          if (
+            track.getCapabilities
+          ) {
+
+            const capabilities =
+              track.getCapabilities();
+
+
+            if (
+              capabilities.focusMode &&
+              capabilities.focusMode.includes(
+                "continuous"
+              )
+            ) {
+
+              await track.applyConstraints({
+
+                advanced: [
+                  {
+                    focusMode:
+                      "continuous"
+                  }
+                ]
+
+              });
+            }
+          }
+        }
+      }
+
+    } catch (focusError) {
+
+      /*
+       * Some browsers/iPhones don't expose
+       * focus controls. The scanner still works.
+       */
+      console.log(
+        "Continuous autofocus unavailable."
+      );
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Camera scanner error:",
+      error
+    );
+
+    scannerStatus.textContent =
+      "Camera unavailable. Check your browser's camera permission.";
+
+    scannerStatus.className =
+      "scanner-status error";
+  }
+}
+
+
+/*
+ * Barcode successfully detected.
+ */
+async function handleBarcodeDetected(
+  decodedText
+) {
+
+  const now =
+    Date.now();
+
+
+  /*
+   * Prevent duplicate detections while the
+   * camera is shutting down.
+   */
+  if (
+    decodedText === lastScan &&
+    now - lastScanTime < 1500
+  ) {
+    return;
+  }
+
+
+  lastScan =
+    decodedText;
+
+  lastScanTime =
+    now;
+
+
+  /*
+   * EAN codes should contain only digits.
+   */
+  const digits =
+    decodedText.replace(/\D/g, "");
+
+
+  /*
+   * Only accept EAN-8 and EAN-13.
+   */
+  if (
+    digits.length !== 8 &&
+    digits.length !== 13
+  ) {
+    return;
+  }
+
+
+  scannerStatus.textContent =
+    "Barcode detected!";
+
+  scannerStatus.className =
+    "scanner-status success";
+
+
+  /*
+   * Put the scanned number directly into
+   * the product-code input.
+   */
+  document.getElementById(
+    "productCode"
+  ).value = digits;
+
+
+  /*
+   * Stop immediately after a successful read.
+   */
+  await stopBarcodeScanner();
+
+
+  /*
+   * Close scanner.
+   */
+  setTimeout(() => {
+
+    scannerOverlay.classList.remove(
+      "open"
+    );
+
+  }, 200);
+}
+
+
+/*
+ * Stop camera.
+ */
+async function stopBarcodeScanner() {
+
+  if (
+    !barcodeScanner ||
+    !scannerRunning
+  ) {
+    return;
+  }
+
+  try {
+
+    await barcodeScanner.stop();
+
+    barcodeScanner.clear();
+
+  } catch (error) {
+
+    console.log(
+      "Scanner cleanup:",
+      error
+    );
+  }
+
+  scannerRunning =
+    false;
+
+  barcodeScanner =
+    null;
+}
+
+
+/*
+ * Close scanner manually.
+ */
+async function closeBarcodeScanner() {
+
+  await stopBarcodeScanner();
+
+  scannerOverlay.classList.remove(
+    "open"
+  );
+}
+
+
+/*
+ * Scanner controls.
+ */
+scanButton.addEventListener(
+  "click",
+  openScanner
+);
+
+closeScanner.addEventListener(
+  "click",
+  closeBarcodeScanner
+);
+
+
+/*
+ * Clicking the dark background closes it.
+ */
+scannerOverlay.addEventListener(
+  "click",
+  function(event) {
+
+    if (
+      event.target === scannerOverlay
+    ) {
+
+      closeBarcodeScanner();
+    }
+  }
+);
+
+
+/*
+ * Stop camera when leaving the page.
+ */
+document.addEventListener(
+  "visibilitychange",
+  function() {
+
+    if (
+      document.hidden &&
+      scannerRunning
+    ) {
+
+      stopBarcodeScanner();
+    }
+  }
+);
+
+
+/*
+ * Escape closes scanner on desktop.
+ */
+document.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (
+      event.key === "Escape" &&
+      scannerOverlay.classList.contains("open")
+    ) {
+
+      closeBarcodeScanner();
+    }
+  }
+);
+
+
+/*
+ * Initial empty state.
+ */
+updateEmptyState();
+
+</script>
+
+</body>
+</html>
