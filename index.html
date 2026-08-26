@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#3A3A3A">
-<title>Sains Gen 2.0</title>
+
+<title>PLACEHOLDER1</title>
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
@@ -23,35 +24,61 @@
   --rgb:255,255,255;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  background:var(--bg);
+}
 
 body{
   margin:0;
   min-height:100vh;
-  padding:25px 14px 100px;
+  padding:20px 14px 100px;
+  overflow-x:hidden;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   color:var(--text);
   background:
-    radial-gradient(circle at 50% -15%,#6C6C6C 0,#4A4A4A 30%,#3A3A3A 68%,#303030 100%);
+    radial-gradient(
+      circle at 50% -20%,
+      #6C6C6C 0,
+      #4A4A4A 32%,
+      #3A3A3A 70%,
+      #303030 100%
+    );
 }
 
-button,input{font:inherit}
+button,
+input{
+  font:inherit;
+}
+
+button{
+  touch-action:manipulation;
+}
 
 .app{
   width:min(520px,100%);
   margin:auto;
 }
 
+/* =========================
+   TOP / ACCENT PICKER
+========================= */
+
 .top{
-  height:35px;
+  height:36px;
   display:flex;
   justify-content:flex-end;
   position:relative;
+  margin-bottom:2px;
 }
 
 .accent-btn{
-  width:31px;
-  height:31px;
+  width:32px;
+  height:32px;
   border:1px solid var(--border2);
   border-radius:9px;
   background:var(--input);
@@ -66,15 +93,17 @@ button,input{font:inherit}
   margin:auto;
   border-radius:50%;
   background:var(--bright);
-  box-shadow:0 0 5px var(--bright),0 0 13px var(--bright);
+  box-shadow:
+    0 0 5px var(--bright),
+    0 0 13px var(--bright);
 }
 
 .palette{
   display:none;
   position:absolute;
   right:0;
-  top:39px;
-  z-index:20;
+  top:40px;
+  z-index:100;
   width:190px;
   padding:12px;
   border:1px solid var(--border2);
@@ -83,7 +112,9 @@ button,input{font:inherit}
   box-shadow:0 18px 50px #0009;
 }
 
-.palette.open{display:block}
+.palette.open{
+  display:block;
+}
 
 .palette-title{
   margin-bottom:9px;
@@ -111,8 +142,14 @@ button,input{font:inherit}
 
 .colour.selected{
   border-color:white;
-  box-shadow:0 0 8px currentColor,0 0 14px currentColor;
+  box-shadow:
+    0 0 8px currentColor,
+    0 0 14px currentColor;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 header{
   text-align:center;
@@ -132,16 +169,22 @@ header p{
   font-size:13px;
 }
 
+/* =========================
+   GENERATOR
+========================= */
+
 .generator{
   padding:20px;
   border:1px solid var(--border2);
-  border-radius:20px;
+  border-radius:22px;
   background:var(--card);
-  box-shadow:0 25px 60px #0005,inset 0 1px #ffffff08;
+  box-shadow:
+    0 25px 60px #0005,
+    inset 0 1px #ffffff08;
 }
 
 .field{
-  margin-bottom:15px;
+  margin-bottom:16px;
 }
 
 label{
@@ -156,14 +199,14 @@ label{
 
 input{
   width:100%;
-  height:46px;
-  padding:0 13px;
+  height:50px;
+  padding:0 15px;
   border:1px solid var(--border2);
-  border-radius:11px;
+  border-radius:13px;
   outline:none;
   background:var(--input);
   color:var(--text);
-  font-size:15px;
+  font-size:16px;
 }
 
 input::placeholder{
@@ -179,65 +222,145 @@ input:focus{
 
 .code-row{
   display:flex;
-  gap:8px;
+  gap:9px;
 }
 
 .code-row input{
   flex:1;
+  min-width:0;
 }
 
 .scan{
-  width:48px;
-  height:46px;
+  width:56px;
+  height:50px;
   flex-shrink:0;
   border:1px solid var(--border2);
-  border-radius:11px;
-  background:var(--input);
-  font-size:21px;
+  border-radius:13px;
+  background:var(--accent);
+  color:white;
+  font-size:23px;
   cursor:pointer;
+  box-shadow:0 0 10px rgba(var(--rgb),.25);
 }
 
-.scan:hover{
-  box-shadow:0 0 14px rgba(var(--rgb),.35);
+.scan:active{
+  transform:scale(.96);
 }
 
-.prices{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:7px;
+/* =========================
+   SWIPE PRICE
+========================= */
+
+.price-field{
+  margin-bottom:17px;
 }
 
-.price{
-  height:43px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  background:var(--input);
-  color:var(--text);
-  font-weight:650;
-  cursor:pointer;
+.price-swipe{
+  position:relative;
+  width:100%;
+  height:82px;
+  overflow:hidden;
+  border:1px solid var(--border2);
+  border-radius:16px;
+  background:
+    linear-gradient(
+      145deg,
+      var(--input),
+      #343434
+    );
+  cursor:ew-resize;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:pan-y;
+  box-shadow:
+    inset 0 1px #ffffff07,
+    0 7px 18px #0002;
 }
 
-.price:hover,
-.price.active{
+.price-swipe.dragging{
   border-color:var(--bright);
-  box-shadow:0 0 11px rgba(var(--rgb),.25);
+  box-shadow:
+    inset 0 1px #ffffff0b,
+    0 0 18px rgba(var(--rgb),.28);
 }
 
-.price.active{
-  background:rgba(var(--rgb),.16);
+.price-content{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
 }
 
-#customPrice{
-  display:none;
-  margin-top:9px;
+.price-small{
+  margin-bottom:2px;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:bold;
+  text-transform:uppercase;
+  letter-spacing:1px;
 }
+
+.price-value{
+  font-size:27px;
+  font-weight:800;
+  letter-spacing:-.5px;
+  text-shadow:0 0 10px rgba(var(--rgb),.18);
+}
+
+.swipe-hint{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:8px;
+  color:#777;
+  text-align:center;
+  font-size:9px;
+  letter-spacing:.3px;
+  pointer-events:none;
+}
+
+.swipe-arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  color:#777;
+  font-size:19px;
+  opacity:.65;
+  pointer-events:none;
+}
+
+.swipe-arrow.left{
+  left:15px;
+}
+
+.swipe-arrow.right{
+  right:15px;
+}
+
+/* Flash when value changes */
+
+.price-swipe.changed{
+  border-color:var(--bright);
+}
+
+.price-swipe.changed .price-value{
+  text-shadow:
+    0 0 5px var(--bright),
+    0 0 15px rgba(var(--rgb),.55);
+}
+
+/* =========================
+   GENERATE
+========================= */
 
 .generate{
   width:100%;
-  height:48px;
-  margin-top:4px;
+  height:51px;
   border:1px solid var(--bright);
-  border-radius:12px;
+  border-radius:13px;
   background:var(--accent);
   color:white;
   font-size:15px;
@@ -246,9 +369,12 @@ input:focus{
   box-shadow:0 0 9px rgba(var(--rgb),.4);
 }
 
+.generate:active{
+  transform:scale(.985);
+}
+
 .generate:hover{
-  background:var(--bright);
-  box-shadow:0 0 17px rgba(var(--rgb),.7);
+  box-shadow:0 0 17px rgba(var(--rgb),.65);
 }
 
 .error{
@@ -257,6 +383,10 @@ input:focus{
   color:#ff5967;
   font-size:13px;
 }
+
+/* =========================
+   SAVED
+========================= */
 
 .saved-title{
   margin:28px 0 10px;
@@ -283,11 +413,15 @@ input:focus{
   gap:13px;
 }
 
+/* =========================
+   BARCODE CARDS
+========================= */
+
 .card{
   position:relative;
   overflow:hidden;
   border:1px solid var(--border2);
-  border-radius:18px;
+  border-radius:20px;
   background:var(--card);
   box-shadow:0 12px 30px #0004;
   cursor:pointer;
@@ -295,41 +429,44 @@ input:focus{
 
 .card-head{
   position:relative;
-  min-height:62px;
+  min-height:66px;
   display:flex;
   align-items:center;
   justify-content:center;
   flex-direction:column;
-  padding:13px 45px 13px 16px;
+  padding:13px 50px 13px 18px;
   text-align:center;
 }
 
 .card-head::after{
   content:"⌄";
   position:absolute;
-  right:16px;
-  font-size:17px;
+  right:17px;
+  top:50%;
+  transform:translateY(-50%);
   color:#999;
-  transition:transform .2s;
+  font-size:19px;
+  transition:transform .25s ease;
 }
 
 .card.open .card-head::after{
-  transform:rotate(180deg);
+  transform:translateY(-50%) rotate(180deg);
 }
 
-.label{
+.card-head-label{
   font-size:15px;
   font-weight:700;
 }
 
-.data{
+.card-head-price{
   margin-top:3px;
-  color:#999;
-  font-size:11px;
+  color:#aaa;
+  font-size:12px;
 }
 
 .card-content{
   display:none;
+  padding-bottom:4px;
 }
 
 .card.open .card-content{
@@ -338,9 +475,10 @@ input:focus{
 
 .frame{
   margin:0 12px;
-  padding:15px 10px;
-  border-radius:13px;
-  background:white;
+  padding:16px 10px 15px;
+  border-radius:16px;
+  background:#eef1f0;
+  box-shadow:inset 0 1px #fff;
 }
 
 .frame svg{
@@ -350,13 +488,39 @@ input:focus{
   margin:auto;
 }
 
+.barcode-price{
+  margin-top:12px;
+  color:#26302d;
+  text-align:center;
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:-.5px;
+}
+
+.barcode-label{
+  margin-top:4px;
+  color:#58615e;
+  text-align:center;
+  font-size:12px;
+  font-weight:600;
+}
+
+.barcode-data{
+  margin-top:7px;
+  color:#6c7571;
+  text-align:center;
+  font-size:9px;
+  letter-spacing:.4px;
+  word-break:break-all;
+}
+
 .card-foot{
-  padding:10px 15px 14px;
+  padding:11px 15px 13px;
   text-align:center;
 }
 
 .remove{
-  padding:7px 13px;
+  padding:7px 15px;
   border:1px solid var(--border2);
   border-radius:9px;
   background:var(--input);
@@ -364,6 +528,14 @@ input:focus{
   font-size:12px;
   cursor:pointer;
 }
+
+.remove:active{
+  transform:scale(.96);
+}
+
+/* =========================
+   FLOATING PLUS
+========================= */
 
 .plus{
   position:fixed;
@@ -376,21 +548,21 @@ input:focus{
   border-radius:50%;
   background:var(--accent);
   color:white;
-  font-size:29px;
+  font-size:30px;
+  line-height:1;
   cursor:pointer;
   box-shadow:
     0 0 12px rgba(var(--rgb),.5),
     0 12px 30px #0007;
 }
 
-.plus:hover{
-  transform:scale(1.07);
-  box-shadow:
-    0 0 20px rgba(var(--rgb),.8),
-    0 12px 30px #0007;
+.plus:active{
+  transform:scale(.94);
 }
 
-/* Scanner */
+/* =========================
+   SCANNER
+========================= */
 
 .overlay{
   display:none;
@@ -436,10 +608,10 @@ input:focus{
 }
 
 .close{
-  width:36px;
-  height:36px;
+  width:38px;
+  height:38px;
   border:1px solid var(--border);
-  border-radius:10px;
+  border-radius:11px;
   background:var(--card);
   color:#ddd;
   font-size:24px;
@@ -492,7 +664,7 @@ input:focus{
   box-shadow:0 0 0 9999px #0002;
 }
 
-.target:after{
+.target::after{
   content:"";
   position:absolute;
   left:4%;
@@ -529,6 +701,7 @@ input:focus{
 }
 
 @media(max-width:430px){
+
   body{
     padding-left:10px;
     padding-right:10px;
@@ -546,6 +719,7 @@ input:focus{
   .camera{
     height:300px;
   }
+
 }
 </style>
 </head>
@@ -556,7 +730,11 @@ input:focus{
 
   <div class="top">
 
-    <button class="accent-btn" id="accentButton">
+    <button
+      class="accent-btn"
+      id="accentButton"
+      aria-label="Change accent colour"
+    >
       <span class="accent-dot"></span>
     </button>
 
@@ -568,26 +746,19 @@ input:focus{
   </div>
 
   <header>
-    <h1>E's Sains Gen</h1>
-    <p>Version 2</p>
+    <h1>PLACEHOLDER1</h1>
+    <p>PLACEHOLDER2</p>
   </header>
 
   <main class="generator">
 
-    <div class="field">
-      <label>Label</label>
-
-      <input
-        id="barcodeLabel"
-        type="text"
-        placeholder="Add a label to your barcode"
-        autocomplete="off"
-      >
-    </div>
+    <!-- BARCODE -->
 
     <div class="field">
 
-      <label>Product Code</label>
+      <label for="productCode">
+        Barcode
+      </label>
 
       <div class="code-row">
 
@@ -604,76 +775,126 @@ input:focus{
           class="scan"
           id="scanButton"
           title="Scan barcode"
-        >📷</button>
+          aria-label="Scan barcode"
+        >
+          📷
+        </button>
 
       </div>
 
     </div>
+
+
+    <!-- LABEL -->
 
     <div class="field">
 
-      <label>Price</label>
+      <label for="barcodeLabel">
+        Label
+      </label>
 
-      <div class="prices">
+      <input
+        id="barcodeLabel"
+        type="text"
+        placeholder="Enter label for barcode"
+        autocomplete="off"
+      >
 
-        <button class="price" data-price="10">
-          10p
-        </button>
+    </div>
 
-        <button class="price" data-price="49">
-          49p
-        </button>
 
-        <button class="price" data-price="100">
-          £1
-        </button>
+    <!-- PRICE -->
 
-        <button class="price" data-price="custom">
-          Custom
-        </button>
+    <div class="price-field">
 
-      </div>
+      <label>
+        Price
+      </label>
 
-      <div id="customPrice">
-        <input
-          id="price"
-          type="number"
-          min="1"
-          max="999999"
-          inputmode="numeric"
-          placeholder="Price in pence"
-        >
+      <div
+        class="price-swipe"
+        id="priceSwipe"
+      >
+
+        <div class="swipe-arrow left">←</div>
+        <div class="swipe-arrow right">→</div>
+
+        <div class="price-content">
+
+          <div class="price-small">
+            Swipe to adjust
+          </div>
+
+          <div
+            class="price-value"
+            id="priceValue"
+          >
+            10p
+          </div>
+
+        </div>
+
+        <div class="swipe-hint">
+          Swipe left or right · full swipe ≈ 50p
+        </div>
+
       </div>
 
     </div>
 
-    <div class="error" id="error"></div>
 
-    <button class="generate" id="generate">
+    <div
+      class="error"
+      id="error"
+    ></div>
+
+
+    <button
+      class="generate"
+      id="generate"
+    >
       Generate Barcode
     </button>
 
   </main>
 
+
   <div class="saved-title">
     Saved Barcodes
   </div>
 
-  <div class="empty" id="empty">
+
+  <div
+    class="empty"
+    id="empty"
+  >
     No barcodes generated yet.
   </div>
 
-  <div class="list" id="list"></div>
+
+  <div
+    class="list"
+    id="list"
+  ></div>
 
 </div>
 
 
-<button class="plus" id="plus">+</button>
+<button
+  class="plus"
+  id="plus"
+  aria-label="Create another barcode"
+>
+  +
+</button>
 
 
-<!-- CAMERA SCANNER -->
+<!-- SCANNER -->
 
-<div class="overlay" id="overlay">
+<div
+  class="overlay"
+  id="overlay"
+>
 
   <div class="scanner">
 
@@ -684,11 +905,16 @@ input:focus{
         <p>EAN-8 / EAN-13</p>
       </div>
 
-      <button class="close" id="close">
+      <button
+        class="close"
+        id="close"
+        aria-label="Close scanner"
+      >
         ×
       </button>
 
     </div>
+
 
     <div class="camera">
 
@@ -698,13 +924,18 @@ input:focus{
 
     </div>
 
-    <div class="status" id="status">
+
+    <div
+      class="status"
+      id="status"
+    >
       Starting camera…
     </div>
 
+
     <div class="tip">
-      Keep the barcode reasonably close and in focus.
-      The scanner continuously analyses the camera feed.
+      Keep the barcode in focus and inside the box.
+      Move slowly if scanning a curved surface.
     </div>
 
   </div>
@@ -714,26 +945,31 @@ input:focus{
 
 <script>
 
-/* Elements */
+/* =========================
+   ELEMENTS
+========================= */
 
-const $=id=>document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-const productCode=$("productCode");
-const labelInput=$("barcodeLabel");
-const priceInput=$("price");
-const error=$("error");
-const list=$("list");
-const empty=$("empty");
+const productCode = $("productCode");
+const labelInput = $("barcodeLabel");
+const errorBox = $("error");
+const list = $("list");
+const empty = $("empty");
 
-let selectedPrice=null;
-let scanning=false;
-let lastCode="";
-let lastCodeTime=0;
+const priceSwipe = $("priceSwipe");
+const priceValue = $("priceValue");
+
+let scanning = false;
+let lastCode = "";
+let lastCodeTime = 0;
 
 
-/* Accent colours */
+/* =========================
+   ACCENT COLOURS
+========================= */
 
-const accents=[
+const accents = [
 
   ["#5B5B5B","#FFFFFF"],
 
@@ -754,22 +990,26 @@ const accents=[
 
   ["#96304A","#FF4F72"],
   ["#52651A","#B8E631"],
-  ["#1E7770","#3DFFD9"],
-  ["#5A5A5A","#D5D5D5"]
+  ["#1E7770","#3DFFD9"]
 
 ];
 
+
 function rgb(hex){
 
-  const n=parseInt(hex.slice(1),16);
+  const number = parseInt(
+    hex.slice(1),
+    16
+  );
 
-  return `${n>>16},${(n>>8)&255},${n&255}`;
+  return `${number >> 16},${(number >> 8) & 255},${number & 255}`;
 
 }
 
-function setAccent(i){
 
-  const [main,bright]=accents[i];
+function setAccent(index){
+
+  const [main, bright] = accents[index];
 
   document.documentElement.style.setProperty(
     "--accent",
@@ -786,277 +1026,550 @@ function setAccent(i){
     rgb(bright)
   );
 
-  document.querySelectorAll(".colour").forEach((x,n)=>{
-    x.classList.toggle("selected",n===i);
-  });
+  document.querySelectorAll(".colour")
+    .forEach((element, i) => {
+
+      element.classList.toggle(
+        "selected",
+        i === index
+      );
+
+    });
 
 }
 
 
-/* Build colour picker */
+/* Create palette */
 
-accents.forEach((c,i)=>{
+accents.forEach((colour, index) => {
 
-  const button=document.createElement("button");
+  const button =
+    document.createElement("button");
 
-  button.className="colour";
+  button.className = "colour";
 
-  button.style.background=c[1];
-  button.style.color=c[1];
+  button.style.background =
+    colour[1];
 
-  button.onclick=()=>{
+  button.style.color =
+    colour[1];
 
-    setAccent(i);
+  button.onclick = () => {
 
-    $("palette").classList.remove("open");
+    setAccent(index);
+
+    $("palette")
+      .classList.remove("open");
 
   };
 
-  $("colours").appendChild(button);
+  $("colours")
+    .appendChild(button);
 
 });
 
 
-/* White default */
+/* Default white */
 
 setAccent(0);
 
 
-/* Accent menu */
+/* Open colour picker */
 
-$("accentButton").onclick=e=>{
+$("accentButton").onclick = event => {
 
-  e.stopPropagation();
+  event.stopPropagation();
 
-  $("palette").classList.toggle("open");
+  $("palette")
+    .classList.toggle("open");
 
 };
 
-$("palette").onclick=e=>e.stopPropagation();
 
-document.onclick=()=>{
-  $("palette").classList.remove("open");
+$("palette").onclick = event => {
+
+  event.stopPropagation();
+
 };
 
 
-/* Product code limit */
+document.addEventListener(
+  "click",
+  () => {
 
-productCode.addEventListener("input",()=>{
+    $("palette")
+      .classList.remove("open");
 
-  productCode.value=
-    productCode.value
-      .replace(/\D/g,"")
-      .slice(0,13);
-
-});
-
-
-/* Price buttons */
-
-document.querySelectorAll(".price").forEach(button=>{
-
-  button.onclick=()=>{
-
-    document.querySelectorAll(".price")
-      .forEach(x=>x.classList.remove("active"));
-
-    button.classList.add("active");
-
-    const value=button.dataset.price;
-
-    if(value==="custom"){
-
-      selectedPrice=null;
-
-      $("customPrice").style.display="block";
-
-    }else{
-
-      selectedPrice=Number(value);
-
-      priceInput.value=value;
-
-      $("customPrice").style.display="none";
-
-    }
-
-  };
-
-});
+  }
+);
 
 
-/* Check digit */
+/* =========================
+   BARCODE INPUT
+========================= */
 
-function checkDigit(input){
+productCode.addEventListener(
+  "input",
+  () => {
 
-  let sum=0;
+    productCode.value =
+      productCode.value
+        .replace(/\D/g, "")
+        .slice(0, 13);
 
-  for(let i=0;i<input.length;i++){
+  }
+);
 
-    const digit=Number(
-      input[input.length-1-i]
-    );
 
-    sum+=digit*(i%2===0?3:1);
+/* =========================
+   PRICE SWIPE SYSTEM
+
+   Full width swipe = ~50p
+
+   No maximum price.
+   Minimum = 0p.
+========================= */
+
+let pricePence = 10;
+
+let dragStartX = 0;
+let dragStartPrice = 0;
+let dragging = false;
+
+
+/* Format price */
+
+function formatPrice(pence){
+
+  pence = Math.max(
+    0,
+    Math.round(pence)
+  );
+
+  if(pence < 100){
+
+    return `${pence}p`;
 
   }
 
-  return (10-(sum%10))%10;
+  const pounds =
+    Math.floor(pence / 100);
+
+  const pennies =
+    pence % 100;
+
+  if(pennies === 0){
+
+    return `£${pounds}`;
+
+  }
+
+  return `£${pounds}.${String(pennies).padStart(2, "0")}`;
 
 }
 
 
-/* Generate */
+/* Update visual price */
+
+function updatePrice(){
+
+  pricePence =
+    Math.max(
+      0,
+      Math.round(pricePence)
+    );
+
+  priceValue.textContent =
+    formatPrice(pricePence);
+
+  priceSwipe.classList.add(
+    "changed"
+  );
+
+  clearTimeout(
+    updatePrice.flashTimer
+  );
+
+  updatePrice.flashTimer =
+    setTimeout(() => {
+
+      priceSwipe.classList.remove(
+        "changed"
+      );
+
+    }, 120);
+
+}
+
+
+updatePrice();
+
+
+/*
+  Pointer events work with both:
+  - iPhone touch
+  - mouse
+*/
+
+priceSwipe.addEventListener(
+  "pointerdown",
+  event => {
+
+    dragging = true;
+
+    dragStartX =
+      event.clientX;
+
+    dragStartPrice =
+      pricePence;
+
+    priceSwipe.classList.add(
+      "dragging"
+    );
+
+    try{
+
+      priceSwipe.setPointerCapture(
+        event.pointerId
+      );
+
+    }catch(e){}
+
+  }
+);
+
+
+priceSwipe.addEventListener(
+  "pointermove",
+  event => {
+
+    if(!dragging)
+      return;
+
+    const rect =
+      priceSwipe.getBoundingClientRect();
+
+    const width =
+      Math.max(rect.width, 1);
+
+    const moved =
+      event.clientX - dragStartX;
+
+
+    /*
+      One complete width =
+      approximately 50 pence
+    */
+
+    const change =
+      (moved / width) * 50;
+
+
+    pricePence =
+      Math.max(
+        0,
+        Math.round(
+          dragStartPrice + change
+        )
+      );
+
+    updatePrice();
+
+  }
+);
+
+
+function stopPriceDrag(){
+
+  if(!dragging)
+    return;
+
+  dragging = false;
+
+  priceSwipe.classList.remove(
+    "dragging"
+  );
+
+}
+
+
+priceSwipe.addEventListener(
+  "pointerup",
+  stopPriceDrag
+);
+
+priceSwipe.addEventListener(
+  "pointercancel",
+  stopPriceDrag
+);
+
+
+/* =========================
+   CHECK DIGIT
+========================= */
+
+function checkDigit(input){
+
+  let sum = 0;
+
+  for(
+    let i = 0;
+    i < input.length;
+    i++
+  ){
+
+    const digit =
+      Number(
+        input[input.length - 1 - i]
+      );
+
+    sum += digit *
+      (
+        i % 2 === 0
+          ? 3
+          : 1
+      );
+
+  }
+
+  return (
+    10 - (sum % 10)
+  ) % 10;
+
+}
+
+
+/* =========================
+   GENERATE BARCODE
+========================= */
 
 function generateBarcode(){
 
-  error.style.display="none";
-
-  const product=productCode.value.trim();
-
-  const label=labelInput.value.trim();
-
-  const price=
-    selectedPrice!==null
-      ?selectedPrice
-      :Number(priceInput.value);
+  errorBox.style.display =
+    "none";
 
 
-  const digits=product.replace(/\D/g,"");
+  const rawProduct =
+    productCode.value.trim();
 
 
-  if(digits.length<8){
+  const label =
+    labelInput.value.trim();
 
-    error.textContent=
+
+  const digits =
+    rawProduct.replace(/\D/g, "");
+
+
+  if(digits.length < 8){
+
+    errorBox.textContent =
       "Enter a valid barcode of at least 8 digits.";
 
-    error.style.display="block";
+    errorBox.style.display =
+      "block";
 
     return;
 
   }
-
-
-  if(!Number.isFinite(price)||price<1){
-
-    error.textContent=
-      "Enter a valid price in pence.";
-
-    error.style.display="block";
-
-    return;
-
-  }
-
-
-  let productDigits=digits;
-
-
-  if(productDigits.length===14)
-    productDigits=productDigits.slice(0,-1);
-
-
-  productDigits=
-    productDigits
-      .padStart(13,"0")
-      .slice(0,13);
-
-
-  const paddedPrice=
-    String(price).padStart(6,"0");
 
 
   /*
-    LABEL IS NOT INCLUDED.
-    Only this data is embedded:
-    91 + product + price + check digit
+    Keep max 13 digits.
+
+    If 14-digit data somehow exists,
+    remove its final check digit.
   */
 
-  const base=
+  let productDigits =
+    digits;
+
+  if(productDigits.length === 14){
+
+    productDigits =
+      productDigits.slice(0, -1);
+
+  }
+
+
+  productDigits =
+    productDigits
+      .padStart(13, "0")
+      .slice(0, 13);
+
+
+  const paddedPrice =
+    String(pricePence)
+      .padStart(6, "0");
+
+
+  /*
+    Embedded barcode data:
+
+    91
+    + product code
+    + price in pence
+    + check digit
+
+    Label is NOT embedded.
+  */
+
+  const base =
     `91${productDigits}${paddedPrice}`;
 
-  const full=
-    base+checkDigit(base);
+
+  const fullBarcode =
+    base + checkDigit(base);
 
 
-  /* Close currently open cards */
+  /* Close all previous cards */
 
-  document.querySelectorAll(".card.open")
-    .forEach(card=>{
-      card.classList.remove("open");
+  document
+    .querySelectorAll(".card.open")
+    .forEach(card => {
+
+      card.classList.remove(
+        "open"
+      );
+
     });
 
 
-  /* Card */
+  /* Create card */
 
-  const card=document.createElement("div");
+  const card =
+    document.createElement("div");
 
-  card.className="card open";
-
-
-  /* Header */
-
-  const head=document.createElement("div");
-
-  head.className="card-head";
+  card.className =
+    "card open";
 
 
-  const title=document.createElement("div");
+  /* Card header */
 
-  title.className="label";
+  const head =
+    document.createElement("div");
 
-  title.textContent=
-    label||"Untitled Barcode";
-
-
-  const data=document.createElement("div");
-
-  data.className="data";
-
-  data.textContent=full;
+  head.className =
+    "card-head";
 
 
-  head.append(title,data);
+  const cardLabel =
+    document.createElement("div");
+
+  cardLabel.className =
+    "card-head-label";
+
+  cardLabel.textContent =
+    label || "Untitled Barcode";
 
 
-  /* Content */
+  const cardPrice =
+    document.createElement("div");
 
-  const content=document.createElement("div");
+  cardPrice.className =
+    "card-head-price";
 
-  content.className="card-content";
-
-
-  const frame=document.createElement("div");
-
-  frame.className="frame";
+  cardPrice.textContent =
+    formatPrice(pricePence);
 
 
-  const svg=document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "svg"
+  head.append(
+    cardLabel,
+    cardPrice
   );
+
+
+  /* Card content */
+
+  const content =
+    document.createElement("div");
+
+  content.className =
+    "card-content";
+
+
+  const frame =
+    document.createElement("div");
+
+  frame.className =
+    "frame";
+
+
+  const svg =
+    document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
 
 
   frame.appendChild(svg);
 
 
+  /* Price below barcode */
+
+  const bigPrice =
+    document.createElement("div");
+
+  bigPrice.className =
+    "barcode-price";
+
+  bigPrice.textContent =
+    formatPrice(pricePence);
+
+
+  /* Label below price */
+
+  const bigLabel =
+    document.createElement("div");
+
+  bigLabel.className =
+    "barcode-label";
+
+  bigLabel.textContent =
+    label || "Untitled Barcode";
+
+
+  /* Barcode data */
+
+  const barcodeData =
+    document.createElement("div");
+
+  barcodeData.className =
+    "barcode-data";
+
+  barcodeData.textContent =
+    fullBarcode;
+
+
+  frame.append(
+    bigPrice,
+    bigLabel,
+    barcodeData
+  );
+
+
   /* Footer */
 
-  const foot=document.createElement("div");
+  const foot =
+    document.createElement("div");
 
-  foot.className="card-foot";
-
-
-  const remove=document.createElement("button");
-
-  remove.className="remove";
-
-  remove.textContent="Remove";
+  foot.className =
+    "card-foot";
 
 
-  remove.onclick=e=>{
+  const remove =
+    document.createElement("button");
 
-    e.stopPropagation();
+  remove.className =
+    "remove";
+
+  remove.textContent =
+    "Remove";
+
+
+  remove.onclick = event => {
+
+    event.stopPropagation();
 
     card.remove();
 
@@ -1068,24 +1581,46 @@ function generateBarcode(){
   foot.appendChild(remove);
 
 
-  content.append(frame,foot);
+  content.append(
+    frame,
+    foot
+  );
 
-  card.append(head,content);
+
+  card.append(
+    head,
+    content
+  );
 
 
-  /* Open/close */
+  /* Accordion behaviour */
 
-  card.onclick=()=>{
+  card.onclick = () => {
 
-    document.querySelectorAll(".card.open")
-      .forEach(other=>{
+    const wasOpen =
+      card.classList.contains(
+        "open"
+      );
 
-        if(other!==card)
-          other.classList.remove("open");
+
+    document
+      .querySelectorAll(".card.open")
+      .forEach(other => {
+
+        other.classList.remove(
+          "open"
+        );
 
       });
 
-    card.classList.toggle("open");
+
+    if(!wasOpen){
+
+      card.classList.add(
+        "open"
+      );
+
+    }
 
   };
 
@@ -1093,87 +1628,124 @@ function generateBarcode(){
   list.prepend(card);
 
 
-  /* Render barcode */
+  /* Render */
 
   try{
 
-    JsBarcode(svg,full,{
+    JsBarcode(
+      svg,
+      fullBarcode,
+      {
 
-      format:"CODE128",
+        format:"CODE128",
 
-      displayValue:true,
+        displayValue:true,
 
-      fontSize:16,
+        fontSize:16,
 
-      width:2,
+        width:2,
 
-      height:85,
+        height:100,
 
-      margin:5,
+        margin:6,
 
-      background:"#fff",
+        background:"#f4f4f4",
 
-      lineColor:"#111",
+        lineColor:"#111",
 
-      fontOptions:"bold"
+        fontOptions:"bold"
 
-    });
+      }
+    );
 
-  }catch(e){
+  }catch(renderError){
 
-    frame.textContent=
+    console.error(renderError);
+
+    frame.textContent =
       "Barcode rendering failed.";
 
   }
 
 
-  /* Reset */
+  /* Reset text inputs */
 
-  labelInput.value="";
-  productCode.value="";
+  labelInput.value =
+    "";
+
+  productCode.value =
+    "";
+
 
   updateEmpty();
 
 
-  /* Show newest barcode */
+  /* Scroll to new barcode */
 
-  card.scrollIntoView({
-    behavior:"smooth",
-    block:"center"
-  });
+  setTimeout(() => {
+
+    card.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+  }, 80);
 
 }
 
 
 /* Generate button */
 
-$("generate").onclick=generateBarcode;
+$("generate").onclick =
+  generateBarcode;
 
 
-/* Plus */
+/* Enter on product input */
 
-$("plus").onclick=()=>{
+productCode.addEventListener(
+  "keydown",
+  event => {
+
+    if(event.key === "Enter"){
+
+      generateBarcode();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   PLUS BUTTON
+========================= */
+
+$("plus").onclick = () => {
 
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
 
-  setTimeout(()=>{
-    labelInput.focus();
-  },350);
+  setTimeout(() => {
+
+    productCode.focus();
+
+  }, 300);
 
 };
 
 
-/* Empty state */
+/* =========================
+   EMPTY STATE
+========================= */
 
 function updateEmpty(){
 
-  empty.style.display=
+  empty.style.display =
     list.children.length
-      ?"none"
-      :"block";
+      ? "none"
+      : "block";
 
 }
 
@@ -1181,31 +1753,43 @@ updateEmpty();
 
 
 /* =========================
-   QUAGGA2 CAMERA SCANNER
-   ========================= */
+   CAMERA SCANNER
+========================= */
 
 function openScanner(){
 
-  $("overlay").classList.add("open");
+  $("overlay")
+    .classList.add("open");
 
-  $("status").textContent=
+  $("status").textContent =
     "Requesting camera…";
 
-  $("status").className="status";
+  $("status").className =
+    "status";
 
-  startScanner();
+
+  /*
+    Small delay helps mobile
+    browsers finish rendering
+    before camera initialises.
+  */
+
+  setTimeout(
+    startScanner,
+    100
+  );
 
 }
 
 
 function startScanner(){
 
-  if(typeof Quagga==="undefined"){
+  if(typeof Quagga === "undefined"){
 
-    $("status").textContent=
+    $("status").textContent =
       "Scanner library failed to load.";
 
-    $("status").className=
+    $("status").className =
       "status error";
 
     return;
@@ -1214,14 +1798,14 @@ function startScanner(){
 
 
   if(
-    !navigator.mediaDevices||
+    !navigator.mediaDevices ||
     !navigator.mediaDevices.getUserMedia
   ){
 
-    $("status").textContent=
+    $("status").textContent =
       "This browser cannot access the camera.";
 
-    $("status").className=
+    $("status").className =
       "status error";
 
     return;
@@ -1229,7 +1813,7 @@ function startScanner(){
   }
 
 
-  scanning=true;
+  scanning = true;
 
 
   Quagga.init({
@@ -1241,7 +1825,9 @@ function startScanner(){
       type:"LiveStream",
 
       target:
-        document.querySelector("#quagga"),
+        document.querySelector(
+          "#quagga"
+        ),
 
       constraints:{
 
@@ -1265,10 +1851,10 @@ function startScanner(){
 
       area:{
 
-        top:"10%",
-        right:"5%",
-        left:"5%",
-        bottom:"10%"
+        top:"8%",
+        right:"4%",
+        left:"4%",
+        bottom:"8%"
 
       }
 
@@ -1284,11 +1870,9 @@ function startScanner(){
     },
 
 
-    frequency:30,
-
+    frequency:25,
 
     numOfWorkers:2,
-
 
     locate:true,
 
@@ -1305,34 +1889,25 @@ function startScanner(){
 
       multiple:false
 
-    },
-
-
-    debug:{
-
-      drawBoundingBox:false,
-
-      showFrequency:false,
-
-      drawScanline:false,
-
-      showPattern:false
-
     }
 
-  },err=>{
+
+  }, initError => {
 
 
-    if(err){
+    if(initError){
 
-      console.error(err);
+      console.error(
+        "Scanner error:",
+        initError
+      );
 
-      scanning=false;
+      scanning = false;
 
-      $("status").textContent=
-        cameraError(err);
+      $("status").textContent =
+        cameraError(initError);
 
-      $("status").className=
+      $("status").className =
         "status error";
 
       return;
@@ -1340,37 +1915,42 @@ function startScanner(){
     }
 
 
-    $("status").textContent=
+    $("status").textContent =
       "Camera ready — point it at a barcode.";
 
 
     Quagga.start();
 
 
-    /* Attempt continuous autofocus */
+    /* Try continuous autofocus */
 
-    setTimeout(()=>{
+    setTimeout(() => {
 
       try{
 
-        const video=
+        const video =
           document.querySelector(
             "#quagga video"
           );
 
-        const track=
+
+        const track =
           video?.srcObject
             ?.getVideoTracks?.()[0];
 
 
-        if(track?.getCapabilities){
+        if(
+          track &&
+          track.getCapabilities
+        ){
 
-          const caps=
+          const capabilities =
             track.getCapabilities();
 
 
           if(
-            caps.focusMode?.includes(
+            capabilities.focusMode &&
+            capabilities.focusMode.includes(
               "continuous"
             )
           ){
@@ -1379,11 +1959,12 @@ function startScanner(){
 
               advanced:[
                 {
-                  focusMode:"continuous"
+                  focusMode:
+                    "continuous"
                 }
               ]
 
-            }).catch(()=>{});
+            }).catch(() => {});
 
           }
 
@@ -1391,105 +1972,128 @@ function startScanner(){
 
       }catch(e){}
 
-    },500);
+    }, 700);
 
   });
 
 }
 
 
-/* Detection */
+/* =========================
+   DETECTION
+========================= */
 
-Quagga.onDetected(result=>{
+Quagga.onDetected(result => {
 
   if(
-    !scanning||
-    !result?.codeResult?.code
-  )
+    !scanning ||
+    !result ||
+    !result.codeResult ||
+    !result.codeResult.code
+  ){
     return;
+  }
 
 
-  const code=
-    String(result.codeResult.code)
-      .replace(/\D/g,"");
+  const code =
+    String(
+      result.codeResult.code
+    )
+      .replace(/\D/g, "");
 
 
-  const format=
+  const format =
     result.codeResult.format;
 
 
   if(
-    (format!=="ean_13"&&
-     format!=="ean_8")||
-    (code.length!==8&&
-     code.length!==13)
+    format !== "ean_13" &&
+    format !== "ean_8"
   ){
-
     return;
+  }
 
+
+  if(
+    code.length !== 8 &&
+    code.length !== 13
+  ){
+    return;
   }
 
 
   /*
-    Require repeated detection
-    before accepting the result.
+    Require same code to be seen
+    twice very close together.
+
+    This reduces false scans.
   */
 
-  const now=Date.now();
+  const now =
+    Date.now();
 
 
-  if(code!==lastCode){
+  if(code !== lastCode){
 
-    lastCode=code;
+    lastCode =
+      code;
 
-    lastCodeTime=now;
+    lastCodeTime =
+      now;
 
     return;
 
   }
 
 
-  if(now-lastCodeTime<100)
+  if(
+    now - lastCodeTime < 80
+  ){
     return;
+  }
 
 
-  scanning=false;
+  scanning = false;
 
 
-  productCode.value=
-    code.slice(0,13);
+  productCode.value =
+    code.slice(0, 13);
 
 
-  $("status").textContent=
+  $("status").textContent =
     "✓ Barcode detected";
 
 
-  $("status").className=
+  $("status").className =
     "status success";
 
 
   setTimeout(
     closeScanner,
-    250
+    350
   );
 
 });
 
 
-/* Camera errors */
+/* =========================
+   CAMERA ERRORS
+========================= */
 
 function cameraError(err){
 
-  const text=
-    String(err||"").toLowerCase();
+  const text =
+    String(err || "")
+      .toLowerCase();
 
 
   if(
-    text.includes("permission")||
-    text.includes("notallowed")
+    text.includes("permission") ||
+    text.includes("notallowed") ||
+    text.includes("denied")
   ){
 
-    return(
+    return (
       "Camera permission was denied. " +
       "Allow camera access for this website."
     );
@@ -1497,89 +2101,105 @@ function cameraError(err){
   }
 
 
-  if(text.includes("notfound")){
+  if(
+    text.includes("notfound")
+  ){
 
-    return "No camera was found.";
+    return (
+      "No camera was found."
+    );
 
   }
 
 
   if(
-    location.protocol!=="https:"&&
-    location.hostname!=="localhost"
+    location.protocol !== "https:" &&
+    location.hostname !== "localhost"
   ){
 
-    return(
+    return (
       "Camera access requires HTTPS."
     );
 
   }
 
 
-  return(
+  return (
     "Could not start the camera. " +
-    "Check your browser camera permission."
+    "Check browser camera permissions."
   );
 
 }
 
 
-/* Close scanner */
+/* =========================
+   CLOSE SCANNER
+========================= */
 
 function closeScanner(){
 
-  scanning=false;
+  scanning = false;
 
 
   try{
 
-    if(typeof Quagga!=="undefined"){
+    if(typeof Quagga !== "undefined"){
 
       Quagga.stop();
-
-      Quagga.offDetected();
 
     }
 
   }catch(e){}
 
 
-  $("quagga").innerHTML="";
+  $("quagga").innerHTML =
+    "";
 
-  $("overlay").classList.remove("open");
+
+  $("overlay")
+    .classList.remove("open");
 
 
-  lastCode="";
+  lastCode =
+    "";
 
-  lastCodeTime=0;
+  lastCodeTime =
+    0;
 
 }
 
 
-/* Scanner controls */
+/* Scanner buttons */
 
-$("scanButton").onclick=
+$("scanButton").onclick =
   openScanner;
 
 
-$("close").onclick=
+$("close").onclick =
   closeScanner;
 
 
-$("overlay").onclick=e=>{
+$("overlay").onclick = event => {
 
-  if(e.target===$("overlay"))
+  if(
+    event.target === $("overlay")
+  ){
+
     closeScanner();
+
+  }
 
 };
 
 
+/* Stop camera if app is hidden */
+
 document.addEventListener(
   "visibilitychange",
-  ()=>{
+  () => {
 
     if(
-      document.hidden&&
+      document.hidden &&
       scanning
     ){
 
@@ -1591,13 +2211,16 @@ document.addEventListener(
 );
 
 
+/* Escape closes scanner */
+
 document.addEventListener(
   "keydown",
-  e=>{
+  event => {
 
     if(
-      e.key==="Escape"&&
-      $("overlay").classList.contains("open")
+      event.key === "Escape" &&
+      $("overlay")
+        .classList.contains("open")
     ){
 
       closeScanner();
