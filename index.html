@@ -2,894 +2,486 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#3A3A3A">
-
-<title>Barcode Generator</title>
+<title>E's Sainsbury's Gen</title>
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
 
 <style>
-:root {
-  --bg: #3A3A3A;
-  --card: #4A4A4A;
-  --card-dark: #333333;
-  --input: #3A3A3A;
-  --border: #5B5B5B;
-  --border-light: #6C6C6C;
-  --text: #F2F2F2;
-  --muted: #A9A9A9;
-
-  /* Default accent */
-  --accent: #8B2028;
-  --accent-bright: #D92838;
-  --accent-rgb: 217, 40, 56;
-
-  --danger: #ff5967;
-  --barcode-bg: #ffffff;
+:root{
+  --bg:#3A3A3A;
+  --card:#4A4A4A;
+  --input:#3A3A3A;
+  --border:#5B5B5B;
+  --border2:#6C6C6C;
+  --text:#eee;
+  --muted:#aaa;
+  --accent:#8B2028;
+  --bright:#D92838;
+  --rgb:217,40,56;
 }
 
-* {
-  box-sizing: border-box;
-}
+*{box-sizing:border-box}
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  padding: 28px 15px 100px;
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
-  color: var(--text);
-
+body{
+  margin:0;
+  min-height:100vh;
+  padding:25px 14px 100px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  color:var(--text);
   background:
-    radial-gradient(
-      circle at 50% -10%,
-      #6C6C6C 0%,
-      #4A4A4A 30%,
-      #3A3A3A 65%,
-      #303030 100%
-    );
-
-  transition:
-    background 0.3s ease,
-    color 0.3s ease;
-}
-
-.app {
-  width: min(520px, 100%);
-  margin: auto;
-}
-
-/* =========================
-   HEADER
-========================= */
-
-.header {
-  text-align: center;
-  margin-bottom: 22px;
-}
-
-.header h1 {
-  margin: 0;
-
-  font-size: 25px;
-  letter-spacing: -0.5px;
-
-  text-shadow:
-    0 0 12px rgba(var(--accent-rgb), 0.35);
-}
-
-.header p {
-  margin: 7px 0 0;
-
-  color: var(--muted);
-  font-size: 13px;
-}
-
-/* =========================
-   TOP BAR
-========================= */
-
-.top-bar {
-  display: flex;
-  justify-content: flex-end;
-
-  position: relative;
-
-  margin-bottom: 9px;
-}
-
-.accent-button {
-  width: 31px;
-  height: 31px;
-
-  padding: 0;
-
-  border: 1px solid var(--border-light);
-  border-radius: 9px;
-
-  background: #3A3A3A;
-
-  cursor: pointer;
-
-  position: relative;
-
-  box-shadow:
-    0 0 8px rgba(var(--accent-rgb), 0.25);
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.2s ease;
-}
-
-.accent-button:hover {
-  transform: scale(1.06);
-
-  box-shadow:
-    0 0 14px rgba(var(--accent-rgb), 0.65);
-}
-
-.accent-dot {
-  width: 12px;
-  height: 12px;
-
-  position: absolute;
-  left: 50%;
-  top: 50%;
-
-  transform: translate(-50%, -50%);
-
-  border-radius: 50%;
-
-  background: var(--accent-bright);
-
-  box-shadow:
-    0 0 5px var(--accent-bright),
-    0 0 12px var(--accent-bright);
-}
-
-/* =========================
-   ACCENT PICKER
-========================= */
-
-.accent-menu {
-  position: absolute;
-
-  top: 39px;
-  right: 0;
-
-  z-index: 100;
-
-  width: 190px;
-
-  padding: 12px;
-
-  border: 1px solid var(--border-light);
-  border-radius: 13px;
-
-  background: #3A3A3A;
-
-  box-shadow:
-    0 15px 45px rgba(0,0,0,0.55),
-    0 0 20px rgba(var(--accent-rgb),0.12);
-
-  display: none;
-
-  animation: menuIn 0.15s ease;
-}
-
-.accent-menu.open {
-  display: block;
-}
-
-.accent-menu-title {
-  color: var(--muted);
-
-  font-size: 10px;
-  font-weight: 700;
-
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-
-  margin-bottom: 9px;
-}
-
-.colour-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, 1fr);
-
-  gap: 8px;
-}
-
-.colour-choice {
-  width: 32px;
-  height: 32px;
-
-  padding: 0;
-
-  border: 2px solid transparent;
-  border-radius: 9px;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.colour-choice:hover {
-  transform: scale(1.12);
+    radial-gradient(circle at 50% -15%,#6C6C6C 0,#4A4A4A 30%,#3A3A3A 68%,#303030 100%);
 }
 
-.colour-choice.selected {
-  border-color: white;
+.app{width:min(520px,100%);margin:auto}
 
-  box-shadow:
-    0 0 7px currentColor,
-    0 0 14px currentColor;
+.top{
+  height:35px;
+  display:flex;
+  justify-content:flex-end;
+  position:relative;
 }
 
-@keyframes menuIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px) scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.accent-btn{
+  width:31px;
+  height:31px;
+  border:1px solid var(--border2);
+  border-radius:9px;
+  background:var(--input);
+  cursor:pointer;
+  box-shadow:0 0 9px rgba(var(--rgb),.3);
 }
-
-/* =========================
-   GENERATOR
-========================= */
-
-.generator-card {
-  background: #4A4A4A;
 
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-
-  padding: 20px;
-
-  box-shadow:
-    0 25px 60px rgba(0,0,0,0.35),
-    inset 0 1px rgba(255,255,255,0.035);
+.accent-dot{
+  display:block;
+  width:12px;
+  height:12px;
+  margin:auto;
+  border-radius:50%;
+  background:var(--bright);
+  box-shadow:0 0 5px var(--bright),0 0 13px var(--bright);
 }
 
-.field {
-  margin-bottom: 16px;
+.palette{
+  display:none;
+  position:absolute;
+  right:0;
+  top:39px;
+  z-index:20;
+  width:190px;
+  padding:12px;
+  border:1px solid var(--border2);
+  border-radius:13px;
+  background:#3A3A3A;
+  box-shadow:0 18px 50px #0009;
 }
-
-label {
-  display: block;
-
-  margin-bottom: 7px;
 
-  color: #B8B8B8;
+.palette.open{display:block}
 
-  font-size: 10px;
-  font-weight: 750;
-
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+.palette-title{
+  margin-bottom:9px;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:bold;
+  text-transform:uppercase;
+  letter-spacing:.8px;
 }
-
-input {
-  width: 100%;
-  height: 46px;
-
-  border: 1px solid var(--border-light);
-  border-radius: 11px;
-
-  outline: none;
-
-  background: var(--input);
-  color: var(--text);
-
-  padding: 0 13px;
-
-  font-size: 15px;
 
-  transition:
-    border-color 0.15s,
-    box-shadow 0.15s;
+.colours{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
 }
 
-input::placeholder {
-  color: #858585;
+.colour{
+  width:32px;
+  height:32px;
+  padding:0;
+  border:2px solid transparent;
+  border-radius:9px;
+  cursor:pointer;
 }
 
-input:focus {
-  border-color: var(--accent-bright);
-
-  box-shadow:
-    0 0 0 3px rgba(var(--accent-rgb), 0.12),
-    0 0 14px rgba(var(--accent-rgb), 0.12);
+.colour.selected{
+  border-color:white;
+  box-shadow:0 0 8px currentColor,0 0 14px currentColor;
 }
 
-.code-row {
-  display: flex;
-  gap: 8px;
+header{
+  text-align:center;
+  margin-bottom:20px;
 }
 
-.code-row input {
-  flex: 1;
+h1{
+  margin:0;
+  font-size:25px;
+  letter-spacing:-.5px;
+  text-shadow:0 0 12px rgba(var(--rgb),.3);
 }
-
-.scan-button {
-  width: 48px;
-  height: 46px;
-
-  flex-shrink: 0;
-
-  border: 1px solid var(--border-light);
-  border-radius: 11px;
-
-  background: #3A3A3A;
-
-  font-size: 21px;
-
-  cursor: pointer;
 
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.2s ease;
+header p{
+  margin:7px 0 0;
+  color:var(--muted);
+  font-size:13px;
 }
 
-.scan-button:hover {
-  transform: scale(1.04);
-
-  box-shadow:
-    0 0 12px rgba(var(--accent-rgb),0.35);
+.generator{
+  padding:20px;
+  border:1px solid var(--border2);
+  border-radius:20px;
+  background:var(--card);
+  box-shadow:0 25px 60px #0005,inset 0 1px #ffffff08;
 }
-
-/* =========================
-   PRICE BUTTONS
-========================= */
-
-.price-buttons {
-  display: grid;
 
-  grid-template-columns:
-    repeat(4, 1fr);
+.field{margin-bottom:15px}
 
-  gap: 7px;
+label{
+  display:block;
+  margin-bottom:7px;
+  color:#b8b8b8;
+  font-size:10px;
+  font-weight:750;
+  text-transform:uppercase;
+  letter-spacing:.8px;
 }
-
-.price-button {
-  height: 43px;
-
-  border: 1px solid var(--border);
-  border-radius: 10px;
-
-  background: #3A3A3A;
-  color: var(--text);
-
-  font-size: 14px;
-  font-weight: 650;
 
-  cursor: pointer;
-
-  transition:
-    border-color 0.15s,
-    box-shadow 0.2s,
-    background 0.15s;
+input{
+  width:100%;
+  height:46px;
+  padding:0 13px;
+  border:1px solid var(--border2);
+  border-radius:11px;
+  outline:none;
+  background:var(--input);
+  color:var(--text);
+  font-size:15px;
 }
 
-.price-button:hover {
-  border-color: var(--accent-bright);
+input::placeholder{color:#858585}
 
-  box-shadow:
-    0 0 10px rgba(var(--accent-rgb),0.2);
+input:focus{
+  border-color:var(--bright);
+  box-shadow:0 0 0 3px rgba(var(--rgb),.12),0 0 14px rgba(var(--rgb),.12);
 }
-
-.price-button.active {
-  border-color: var(--accent-bright);
-
-  background:
-    rgba(var(--accent-rgb),0.16);
 
-  color: #ffffff;
-
-  box-shadow:
-    0 0 10px rgba(var(--accent-rgb),0.28),
-    inset 0 0 10px rgba(var(--accent-rgb),0.06);
+.code-row{
+  display:flex;
+  gap:8px;
 }
-
-#customPriceContainer {
-  display: none;
 
-  margin-top: 10px;
-}
+.code-row input{flex:1}
 
-#price {
-  width: 100%;
+.scan{
+  width:48px;
+  height:46px;
+  flex-shrink:0;
+  border:1px solid var(--border2);
+  border-radius:11px;
+  background:var(--input);
+  font-size:21px;
+  cursor:pointer;
 }
-
-/* =========================
-   GENERATE
-========================= */
-
-.generate-button {
-  width: 100%;
-  height: 48px;
-
-  margin-top: 4px;
-
-  border: 1px solid var(--accent-bright);
-  border-radius: 12px;
-
-  background: var(--accent);
-
-  color: #ffffff;
-
-  font-size: 15px;
-  font-weight: 800;
-
-  cursor: pointer;
 
-  box-shadow:
-    0 0 8px rgba(var(--accent-rgb),0.35),
-    0 7px 25px rgba(var(--accent-rgb),0.12);
-
-  transition:
-    background 0.15s,
-    transform 0.15s,
-    box-shadow 0.2s;
+.scan:hover{
+  box-shadow:0 0 14px rgba(var(--rgb),.35);
 }
-
-.generate-button:hover {
-  background: var(--accent-bright);
-
-  transform: translateY(-1px);
 
-  box-shadow:
-    0 0 14px rgba(var(--accent-rgb),0.65),
-    0 9px 30px rgba(var(--accent-rgb),0.2);
+.prices{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
 }
-
-.error {
-  display: none;
-
-  margin: 0 0 12px;
-
-  color: var(--danger);
 
-  font-size: 13px;
+.price{
+  height:43px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--input);
+  color:var(--text);
+  font-weight:650;
+  cursor:pointer;
 }
 
-/* =========================
-   SAVED BARCODES
-========================= */
-
-.saved-title {
-  margin: 28px 0 10px;
-
-  color: var(--muted);
-
-  font-size: 10px;
-  font-weight: 750;
-
-  letter-spacing: 1px;
-
-  text-align: center;
-  text-transform: uppercase;
+.price:hover,.price.active{
+  border-color:var(--bright);
+  box-shadow:0 0 11px rgba(var(--rgb),.25);
 }
-
-.empty {
-  padding: 28px 15px;
-
-  border: 1px dashed var(--border-light);
-  border-radius: 17px;
 
-  text-align: center;
-
-  color: var(--muted);
-
-  font-size: 13px;
+.price.active{
+  background:rgba(var(--rgb),.16);
 }
-
-.barcode-list {
-  display: flex;
 
-  flex-direction: column;
-
-  gap: 13px;
+#customPrice{
+  display:none;
+  margin-top:9px;
 }
-
-.barcode-card {
-  overflow: hidden;
-
-  border: 1px solid var(--border-light);
-  border-radius: 18px;
-
-  background: #4A4A4A;
 
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.28),
-    inset 0 1px rgba(255,255,255,0.025);
+.generate{
+  width:100%;
+  height:48px;
+  margin-top:4px;
+  border:1px solid var(--bright);
+  border-radius:12px;
+  background:var(--accent);
+  color:white;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 0 9px rgba(var(--rgb),.4);
 }
 
-.barcode-card-header {
-  padding: 14px 16px 9px;
-
-  text-align: center;
+.generate:hover{
+  background:var(--bright);
+  box-shadow:0 0 17px rgba(var(--rgb),.7);
 }
 
-.barcode-label {
-  font-size: 15px;
-  font-weight: 700;
+.error{
+  display:none;
+  margin:0 0 12px;
+  color:#ff5967;
+  font-size:13px;
 }
-
-.barcode-data {
-  margin-top: 3px;
-
-  color: #999999;
 
-  font-size: 11px;
+.saved-title{
+  margin:28px 0 10px;
+  color:var(--muted);
+  text-align:center;
+  font-size:10px;
+  font-weight:bold;
+  letter-spacing:1px;
+  text-transform:uppercase;
 }
-
-.barcode-frame {
-  margin: 0 12px;
-
-  padding: 15px 10px;
-
-  border-radius: 13px;
-
-  background: var(--barcode-bg);
 
-  text-align: center;
+.empty{
+  padding:27px 15px;
+  border:1px dashed var(--border2);
+  border-radius:17px;
+  color:var(--muted);
+  text-align:center;
+  font-size:13px;
 }
 
-.barcode-frame svg {
-  display: block;
-
-  width: 100%;
-  max-width: 430px;
-
-  height: auto;
-
-  margin: auto;
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:13px;
 }
 
-.barcode-footer {
-  display: flex;
-
-  justify-content: center;
-
-  padding: 10px 15px 14px;
+.card{
+  overflow:hidden;
+  border:1px solid var(--border2);
+  border-radius:18px;
+  background:var(--card);
+  box-shadow:0 12px 30px #0004;
 }
-
-.delete-button {
-  border: 1px solid var(--border-light);
-  border-radius: 9px;
-
-  background: #3A3A3A;
 
-  color: #ff5967;
-
-  padding: 7px 13px;
-
-  font-size: 12px;
-
-  cursor: pointer;
+.card-head{
+  padding:14px 16px 9px;
+  text-align:center;
 }
 
-.delete-button:hover {
-  box-shadow:
-    0 0 10px rgba(255,89,103,0.2);
+.label{
+  font-size:15px;
+  font-weight:700;
 }
-
-/* =========================
-   FLOATING +
-========================= */
-
-.floating-add {
-  position: fixed;
-
-  right: 22px;
-  bottom: 22px;
-
-  z-index: 50;
 
-  width: 56px;
-  height: 56px;
-
-  border: 1px solid var(--accent-bright);
-  border-radius: 50%;
-
-  background: var(--accent);
-
-  color: #ffffff;
-
-  font-size: 29px;
-  font-weight: 300;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 0 10px rgba(var(--accent-rgb),0.45),
-    0 12px 30px rgba(0,0,0,0.45);
-
-  transition:
-    transform 0.15s,
-    box-shadow 0.2s;
+.data{
+  margin-top:3px;
+  color:#999;
+  font-size:11px;
 }
 
-.floating-add:hover {
-  transform: scale(1.07);
-
-  box-shadow:
-    0 0 18px rgba(var(--accent-rgb),0.75),
-    0 12px 30px rgba(0,0,0,0.45);
+.frame{
+  margin:0 12px;
+  padding:15px 10px;
+  border-radius:13px;
+  background:white;
 }
-
-/* =========================
-   SCANNER
-========================= */
-
-.scanner-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 9999;
-
-  display: none;
-
-  align-items: center;
-  justify-content: center;
 
-  padding: 14px;
-
-  background: rgba(0,0,0,0.84);
-
-  backdrop-filter: blur(8px);
+.frame svg{
+  display:block;
+  width:100%;
+  height:auto;
+  margin:auto;
 }
 
-.scanner-overlay.open {
-  display: flex;
+.card-foot{
+  padding:10px 15px 14px;
+  text-align:center;
 }
-
-.scanner-modal {
-  width: min(520px, 100%);
-
-  overflow: hidden;
-
-  border: 1px solid #6C6C6C;
-  border-radius: 20px;
-
-  background: #3A3A3A;
 
-  box-shadow:
-    0 30px 90px rgba(0,0,0,0.75);
+.remove{
+  padding:7px 13px;
+  border:1px solid var(--border2);
+  border-radius:9px;
+  background:var(--input);
+  color:#ff5967;
+  font-size:12px;
+  cursor:pointer;
 }
 
-.scanner-header {
-  display: flex;
-
-  justify-content: space-between;
-  align-items: flex-start;
-
-  gap: 15px;
-
-  padding: 17px;
+.plus{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  z-index:30;
+  width:56px;
+  height:56px;
+  border:1px solid var(--bright);
+  border-radius:50%;
+  background:var(--accent);
+  color:white;
+  font-size:29px;
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(var(--rgb),.5),0 12px 30px #0007;
 }
 
-.scanner-header h2 {
-  margin: 0;
-
-  font-size: 18px;
+.plus:hover{
+  transform:scale(1.07);
+  box-shadow:0 0 20px rgba(var(--rgb),.8),0 12px 30px #0007;
 }
-
-.scanner-header p {
-  margin: 5px 0 0;
 
-  color: #A9A9A9;
+/* Scanner */
 
-  font-size: 12px;
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:999;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  background:#000d;
+  backdrop-filter:blur(8px);
 }
-
-.scanner-close {
-  width: 36px;
-  height: 36px;
-
-  border: 1px solid #5B5B5B;
-  border-radius: 10px;
 
-  background: #4A4A4A;
+.overlay.open{display:flex}
 
-  color: #ddd;
-
-  font-size: 25px;
-
-  cursor: pointer;
+.scanner{
+  width:min(520px,100%);
+  overflow:hidden;
+  border:1px solid var(--border2);
+  border-radius:20px;
+  background:#3A3A3A;
+  box-shadow:0 30px 90px #000;
 }
 
-.scanner-close:hover {
-  background: #5B5B5B;
+.scanner-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  padding:17px;
 }
-
-/*
- IMPORTANT:
- This is deliberately a real visible camera viewport.
-*/
-.scanner-camera-container {
-  position: relative;
-
-  width: calc(100% - 24px);
-  height: 330px;
-
-  margin: 0 12px;
-
-  overflow: hidden;
-
-  border-radius: 14px;
 
-  background: #000;
-
-  border: 1px solid #5B5B5B;
+.scanner-head h2{
+  margin:0;
+  font-size:18px;
 }
-
-#barcodeScanner {
-  position: absolute;
-
-  inset: 0;
 
-  width: 100%;
-  height: 100%;
+.scanner-head p{
+  margin:5px 0 0;
+  color:#aaa;
+  font-size:12px;
 }
 
-#barcodeScanner video {
-  display: block;
-
-  width: 100% !important;
-  height: 100% !important;
-
-  object-fit: cover;
+.close{
+  width:36px;
+  height:36px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--card);
+  color:#ddd;
+  font-size:24px;
+  cursor:pointer;
 }
 
-/*
- Don't hide the camera scan region itself.
-*/
-#barcodeScanner__scan_region {
-  width: 100% !important;
-  height: 100% !important;
-
-  border: 0 !important;
+.camera{
+  position:relative;
+  width:calc(100% - 24px);
+  height:330px;
+  margin:0 12px;
+  overflow:hidden;
+  border-radius:14px;
+  background:#000;
+  border:1px solid var(--border);
 }
 
-/*
- Hide only the library controls below the video.
-*/
-#barcodeScanner__dashboard_section {
-  display: none !important;
+#quagga{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
 }
 
-#barcodeScanner__header_message {
-  display: none !important;
+#quagga video{
+  display:block;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover;
 }
-
-/* Scanner guide */
 
-.scanner-target {
-  position: absolute;
-
-  left: 5%;
-  right: 5%;
-
-  top: 50%;
-
-  height: 105px;
-
-  transform: translateY(-50%);
-
-  border: 2px solid rgba(255,255,255,0.78);
-
-  border-radius: 10px;
-
-  pointer-events: none;
-
-  box-shadow:
-    0 0 0 9999px rgba(0,0,0,0.12);
+#quagga canvas{
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
 }
-
-.target-line {
-  position: absolute;
-
-  left: 4%;
-  right: 4%;
 
-  top: 50%;
-
-  height: 2px;
-
-  background: rgba(255,255,255,0.82);
-
-  box-shadow:
-    0 0 8px rgba(255,255,255,0.8);
+.target{
+  position:absolute;
+  left:5%;
+  right:5%;
+  top:50%;
+  height:110px;
+  transform:translateY(-50%);
+  border:2px solid #fff9;
+  border-radius:10px;
+  pointer-events:none;
+  box-shadow:0 0 0 9999px #0002;
 }
-
-.scanner-status {
-  min-height: 20px;
 
-  padding: 12px 17px 6px;
-
-  text-align: center;
-
-  color: #B0B0B0;
-
-  font-size: 13px;
+.target:after{
+  content:"";
+  position:absolute;
+  left:4%;
+  right:4%;
+  top:50%;
+  height:2px;
+  background:#fff;
+  box-shadow:0 0 8px white;
 }
 
-.scanner-status.success {
-  color: var(--accent-bright);
-
-  font-weight: 750;
-
-  text-shadow:
-    0 0 8px rgba(var(--accent-rgb),0.7);
+.status{
+  min-height:21px;
+  padding:12px 17px 5px;
+  color:#aaa;
+  text-align:center;
+  font-size:13px;
 }
 
-.scanner-status.error {
-  color: #ff5967;
+.status.success{
+  color:var(--bright);
+  font-weight:bold;
+  text-shadow:0 0 9px rgba(var(--rgb),.7);
 }
-
-.scanner-tip {
-  padding: 5px 17px 16px;
-
-  color: #858585;
 
-  font-size: 11px;
+.status.error{color:#ff5967}
 
-  line-height: 1.4;
-
-  text-align: center;
+.tip{
+  padding:5px 17px 16px;
+  color:#858585;
+  font-size:11px;
+  text-align:center;
 }
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 430px) {
-
-  body {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .generator-card {
-    padding: 16px;
-  }
-
-  .price-buttons {
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-  .floating-add {
-    right: 16px;
-    bottom: 16px;
-  }
 
-  .scanner-camera-container {
-    height: 300px;
-  }
+@media(max-width:430px){
+  body{padding-left:10px;padding-right:10px}
+  .generator{padding:16px}
+  .plus{right:16px;bottom:16px}
+  .camera{height:300px}
 }
 </style>
 </head>
@@ -898,250 +490,123 @@ input:focus {
 
 <div class="app">
 
-  <div class="top-bar">
-
-    <button
-      type="button"
-      class="accent-button"
-      id="accentButton"
-      title="Change accent colour"
-    >
+  <div class="top">
+    <button class="accent-btn" id="accentButton">
       <span class="accent-dot"></span>
     </button>
 
-    <div
-      class="accent-menu"
-      id="accentMenu"
-    >
-      <div class="accent-menu-title">
-        Accent colour
-      </div>
-
-      <div
-        class="colour-grid"
-        id="colourGrid"
-      ></div>
+    <div class="palette" id="palette">
+      <div class="palette-title">Accent colour</div>
+      <div class="colours" id="colours"></div>
     </div>
-
   </div>
 
-  <div class="header">
-    <h1>PLACEHOLDER1</h1>
+  <header>
+    <h1>E's Sainsbury's Gen</h1>
+    <p>Groupcat Access</p>
+  </header>
 
-    <p>
-      PLACEHOLDER2
-    </p>
-  </div>
-
-
-  <!-- GENERATOR -->
-
-  <div class="generator-card">
+  <main class="generator">
 
     <div class="field">
-
-      <label for="barcodeLabel">
-        Label
-      </label>
-
+      <label>Label</label>
       <input
-        type="text"
         id="barcodeLabel"
+        type="text"
         placeholder="Add a label to your barcode"
         autocomplete="off"
       >
-
     </div>
 
-
     <div class="field">
-
-      <label for="productCode">
-        Product Code
-      </label>
+      <label>Product Code</label>
 
       <div class="code-row">
-
         <input
-          type="text"
           id="productCode"
-          placeholder="Enter barcode number"
-          inputmode="numeric"
-          autocomplete="off"
+          type="text"
           maxlength="13"
+          inputmode="numeric"
+          placeholder="Enter barcode number"
+          autocomplete="off"
         >
 
-        <button
-          type="button"
-          id="scanButton"
-          class="scan-button"
-          title="Scan barcode"
-        >
+        <button class="scan" id="scanButton" title="Scan barcode">
           📷
         </button>
-
       </div>
-
     </div>
 
-
     <div class="field">
+      <label>Price</label>
 
-      <label>
-        Price
-      </label>
-
-      <div class="price-buttons">
-
-        <button
-          class="price-button"
-          data-price="10"
-        >
-          10p
-        </button>
-
-        <button
-          class="price-button"
-          data-price="49"
-        >
-          49p
-        </button>
-
-        <button
-          class="price-button"
-          data-price="100"
-        >
-          £1
-        </button>
-
-        <button
-          class="price-button"
-          data-price="custom"
-        >
-          Custom
-        </button>
-
+      <div class="prices">
+        <button class="price" data-price="10">10p</button>
+        <button class="price" data-price="49">49p</button>
+        <button class="price" data-price="100">£1</button>
+        <button class="price" data-price="custom">Custom</button>
       </div>
 
-
-      <div id="customPriceContainer">
-
+      <div id="customPrice">
         <input
-          type="number"
           id="price"
-          placeholder="Price in pence"
+          type="number"
           min="1"
           max="999999"
           inputmode="numeric"
+          placeholder="Price in pence"
         >
-
       </div>
-
     </div>
 
+    <div class="error" id="error"></div>
 
-    <p
-      class="error"
-      id="error"
-    ></p>
-
-
-    <button
-      type="button"
-      class="generate-button"
-      id="generateButton"
-    >
+    <button class="generate" id="generate">
       Generate Barcode
     </button>
 
-  </div>
+  </main>
 
+  <div class="saved-title">Saved Barcodes</div>
 
-  <div class="saved-title">
-    Saved Barcodes
-  </div>
-
-
-  <div
-    id="emptyState"
-    class="empty"
-  >
+  <div class="empty" id="empty">
     No barcodes generated yet.
   </div>
 
-
-  <div
-    id="barcodeList"
-    class="barcode-list"
-  ></div>
+  <div class="list" id="list"></div>
 
 </div>
 
-
-<!-- FLOATING PLUS -->
-
-<button
-  type="button"
-  class="floating-add"
-  id="floatingAdd"
-  title="New barcode"
->
-  +
-</button>
+<button class="plus" id="plus">+</button>
 
 
-<!-- SCANNER -->
+<!-- CAMERA -->
 
-<div
-  class="scanner-overlay"
-  id="scannerOverlay"
->
+<div class="overlay" id="overlay">
 
-  <div class="scanner-modal">
+  <div class="scanner">
 
-    <div class="scanner-header">
-
+    <div class="scanner-head">
       <div>
         <h2>Scan Barcode</h2>
-
-        <p>
-          EAN-8 and EAN-13
-        </p>
+        <p>EAN-8 / EAN-13</p>
       </div>
 
-      <button
-        type="button"
-        class="scanner-close"
-        id="closeScanner"
-      >
-        ×
-      </button>
-
+      <button class="close" id="close">×</button>
     </div>
 
-
-    <div class="scanner-camera-container">
-
-      <div id="barcodeScanner"></div>
-
-      <div class="scanner-target">
-        <div class="target-line"></div>
-      </div>
-
+    <div class="camera">
+      <div id="quagga"></div>
+      <div class="target"></div>
     </div>
 
-
-    <div
-      class="scanner-status"
-      id="scannerStatus"
-    >
+    <div class="status" id="status">
       Starting camera…
     </div>
 
-
-    <div class="scanner-tip">
-      Move closer or further away until the barcode is sharp.
-      The scanner continuously retries difficult frames.
+    <div class="tip">
+      Keep the barcode reasonably close and in focus.
+      The scanner continuously analyses the camera feed.
     </div>
 
   </div>
@@ -1150,1326 +615,490 @@ input:focus {
 
 
 <script>
+const $=id=>document.getElementById(id);
 
-/* =========================================================
-   ACCENT COLOURS
-========================================================= */
+const productCode=$("productCode");
+const labelInput=$("barcodeLabel");
+const priceInput=$("price");
+const error=$("error");
+const list=$("list");
+const empty=$("empty");
 
-const accentColours = [
+let selectedPrice=null;
+let scanning=false;
+let lastCode="";
+let lastCodeTime=0;
 
-  {
-    main: "#8B2028",
-    bright: "#D92838",
-    rgb: "217, 40, 56"
-  },
 
-  {
-    main: "#7A2419",
-    bright: "#F04432",
-    rgb: "240, 68, 50"
-  },
+/* Accent colours */
 
-  {
-    main: "#8A4B16",
-    bright: "#FF8A24",
-    rgb: "255, 138, 36"
-  },
-
-  {
-    main: "#75600D",
-    bright: "#E8C51A",
-    rgb: "232, 197, 26"
-  },
-
-  {
-    main: "#39751C",
-    bright: "#70E83E",
-    rgb: "112, 232, 62"
-  },
-
-  {
-    main: "#167044",
-    bright: "#32E88A",
-    rgb: "50, 232, 138"
-  },
-
-  {
-    main: "#116A6A",
-    bright: "#25E0DF",
-    rgb: "37, 224, 223"
-  },
-
-  {
-    main: "#145A86",
-    bright: "#28AFFF",
-    rgb: "40, 175, 255"
-  },
-
-  {
-    main: "#273E91",
-    bright: "#536FFF",
-    rgb: "83, 111, 255"
-  },
-
-  {
-    main: "#55349B",
-    bright: "#965CFF",
-    rgb: "150, 92, 255"
-  },
-
-  {
-    main: "#762C91",
-    bright: "#D24CFF",
-    rgb: "210, 76, 255"
-  },
-
-  {
-    main: "#8D2869",
-    bright: "#FF4DB8",
-    rgb: "255, 77, 184"
-  },
-
-  {
-    main: "#96304A",
-    bright: "#FF4F72",
-    rgb: "255, 79, 114"
-  },
-
-  {
-    main: "#52651A",
-    bright: "#B8E631",
-    rgb: "184, 230, 49"
-  },
-
-  {
-    main: "#1E7770",
-    bright: "#3DFFD9",
-    rgb: "61, 255, 217"
-  },
-
-  {
-    main: "#5A5A5A",
-    bright: "#D5D5D5",
-    rgb: "213, 213, 213"
-  }
-
+const accents=[
+  ["#8B2028","#D92838"],
+  ["#7A2419","#F04432"],
+  ["#8A4B16","#FF8A24"],
+  ["#75600D","#E8C51A"],
+  ["#39751C","#70E83E"],
+  ["#167044","#32E88A"],
+  ["#116A6A","#25E0DF"],
+  ["#145A86","#28AFFF"],
+  ["#273E91","#536FFF"],
+  ["#55349B","#965CFF"],
+  ["#762C91","#D24CFF"],
+  ["#8D2869","#FF4DB8"],
+  ["#96304A","#FF4F72"],
+  ["#52651A","#B8E631"],
+  ["#1E7770","#3DFFD9"],
+  ["#5A5A5A","#D5D5D5"]
 ];
 
-
-const colourGrid =
-  document.getElementById("colourGrid");
-
-
-const accentButton =
-  document.getElementById("accentButton");
-
-
-const accentMenu =
-  document.getElementById("accentMenu");
-
-
-let currentAccent = 0;
-
-
-function setAccent(index) {
-
-  const colour =
-    accentColours[index];
-
-  document.documentElement.style.setProperty(
-    "--accent",
-    colour.main
-  );
-
-  document.documentElement.style.setProperty(
-    "--accent-bright",
-    colour.bright
-  );
-
-  document.documentElement.style.setProperty(
-    "--accent-rgb",
-    colour.rgb
-  );
-
-  currentAccent = index;
-
-  document
-    .querySelectorAll(".colour-choice")
-    .forEach((button, i) => {
-
-      button.classList.toggle(
-        "selected",
-        i === index
-      );
-
-    });
+function rgb(hex){
+  const n=parseInt(hex.slice(1),16);
+  return `${n>>16},${(n>>8)&255},${n&255}`;
 }
 
+function setAccent(i){
+  const [main,bright]=accents[i];
 
-accentColours.forEach(
-  (colour, index) => {
+  document.documentElement.style.setProperty("--accent",main);
+  document.documentElement.style.setProperty("--bright",bright);
+  document.documentElement.style.setProperty("--rgb",rgb(bright));
 
-    const button =
-      document.createElement("button");
+  document.querySelectorAll(".colour").forEach((x,n)=>{
+    x.classList.toggle("selected",n===i);
+  });
+}
 
-    button.type = "button";
-
-    button.className =
-      "colour-choice";
-
-    button.style.background =
-      colour.bright;
-
-    button.style.color =
-      colour.bright;
-
-    button.title =
-      "Accent colour " + (index + 1);
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        setAccent(index);
-
-        accentMenu.classList.remove(
-          "open"
-        );
-
-      }
-    );
-
-    colourGrid.appendChild(button);
-
-  }
-);
-
+accents.forEach((c,i)=>{
+  const b=document.createElement("button");
+  b.className="colour";
+  b.style.background=c[1];
+  b.style.color=c[1];
+  b.onclick=()=>{
+    setAccent(i);
+    $("palette").classList.remove("open");
+  };
+  $("colours").appendChild(b);
+});
 
 setAccent(0);
 
+$("accentButton").onclick=e=>{
+  e.stopPropagation();
+  $("palette").classList.toggle("open");
+};
 
-accentButton.addEventListener(
-  "click",
-  event => {
+$("palette").onclick=e=>e.stopPropagation();
 
-    event.stopPropagation();
+document.onclick=()=>{
+  $("palette").classList.remove("open");
+};
 
-    accentMenu.classList.toggle(
-      "open"
-    );
 
+/* Product code */
+
+productCode.addEventListener("input",()=>{
+  productCode.value=
+    productCode.value.replace(/\D/g,"").slice(0,13);
+});
+
+
+/* Prices */
+
+document.querySelectorAll(".price").forEach(button=>{
+  button.onclick=()=>{
+    document.querySelectorAll(".price")
+      .forEach(x=>x.classList.remove("active"));
+
+    button.classList.add("active");
+
+    const value=button.dataset.price;
+
+    if(value==="custom"){
+      selectedPrice=null;
+      $("customPrice").style.display="block";
+    }else{
+      selectedPrice=Number(value);
+      priceInput.value=value;
+      $("customPrice").style.display="none";
+    }
+  };
+});
+
+
+/* Barcode */
+
+function checkDigit(input){
+  let sum=0;
+
+  for(let i=0;i<input.length;i++){
+    const digit=Number(input[input.length-1-i]);
+    sum+=digit*(i%2===0?3:1);
   }
-);
 
-
-accentMenu.addEventListener(
-  "click",
-  event => {
-
-    event.stopPropagation();
-
-  }
-);
-
-
-document.addEventListener(
-  "click",
-  () => {
-
-    accentMenu.classList.remove(
-      "open"
-    );
-
-  }
-);
-
-
-/* =========================================================
-   PRODUCT CODE LIMIT
-========================================================= */
-
-const productCode =
-  document.getElementById("productCode");
-
-
-productCode.addEventListener(
-  "input",
-  () => {
-
-    productCode.value =
-      productCode.value
-        .replace(/\D/g, "")
-        .slice(0, 13);
-
-  }
-);
-
-
-/* =========================================================
-   BARCODE GENERATOR
-========================================================= */
-
-function padLeft(str, length) {
-
-  return String(str)
-    .padStart(length, "0");
-
+  return (10-(sum%10))%10;
 }
 
+function generateBarcode(){
+  error.style.display="none";
 
-function calculateCheckDigit(input) {
+  const product=productCode.value.trim();
+  const label=labelInput.value.trim();
 
-  let sum = 0;
+  const price=
+    selectedPrice!==null
+      ?selectedPrice
+      :Number(priceInput.value);
 
-  for (
-    let i = 0;
-    i < input.length;
-    i++
-  ) {
+  const digits=product.replace(/\D/g,"");
 
-    const digit =
-      parseInt(
-        input[input.length - 1 - i],
-        10
-      );
-
-    const weight =
-      (i % 2 === 0)
-        ? 3
-        : 1;
-
-    sum += digit * weight;
-
-  }
-
-  return (
-    10 - (sum % 10)
-  ) % 10;
-
-}
-
-
-let selectedPrice = null;
-
-
-document
-  .querySelectorAll(".price-button")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        document
-          .querySelectorAll(".price-button")
-          .forEach(btn => {
-
-            btn.classList.remove(
-              "active"
-            );
-
-          });
-
-
-        button.classList.add(
-          "active"
-        );
-
-
-        const value =
-          button.dataset.price;
-
-
-        if (value === "custom") {
-
-          selectedPrice = null;
-
-          document
-            .getElementById(
-              "customPriceContainer"
-            )
-            .style.display = "block";
-
-        } else {
-
-          selectedPrice =
-            Number(value);
-
-          document
-            .getElementById("price")
-            .value = value;
-
-          document
-            .getElementById(
-              "customPriceContainer"
-            )
-            .style.display = "none";
-
-        }
-
-      }
-    );
-
-  });
-
-
-function generateBarcode() {
-
-  const labelInput =
-    document.getElementById(
-      "barcodeLabel"
-    );
-
-  const priceInput =
-    document.getElementById(
-      "price"
-    );
-
-  const error =
-    document.getElementById(
-      "error"
-    );
-
-
-  const rawProduct =
-    productCode.value.trim();
-
-
-  const label =
-    labelInput.value.trim();
-
-
-  let price;
-
-
-  if (selectedPrice !== null) {
-
-    price = selectedPrice;
-
-  } else {
-
-    price =
-      Number(priceInput.value);
-
-  }
-
-
-  error.style.display =
-    "none";
-
-
-  const numericProduct =
-    rawProduct.replace(
-      /\D/g,
-      ""
-    );
-
-
-  if (
-    !numericProduct ||
-    numericProduct.length < 8
-  ) {
-
-    error.textContent =
-      "Enter a valid product barcode.";
-
-    error.style.display =
-      "block";
-
+  if(digits.length<8){
+    error.textContent="Enter a valid barcode of at least 8 digits.";
+    error.style.display="block";
     return;
   }
 
-
-  if (
-    !Number.isFinite(price) ||
-    price < 1
-  ) {
-
-    error.textContent =
-      "Enter a valid price in pence.";
-
-    error.style.display =
-      "block";
-
+  if(!Number.isFinite(price)||price<1){
+    error.textContent="Enter a valid price in pence.";
+    error.style.display="block";
     return;
   }
 
+  let productDigits=digits;
 
-  let productDigits =
-    numericProduct.length === 14
-      ? numericProduct.slice(0, -1)
-      : numericProduct;
+  if(productDigits.length===14)
+    productDigits=productDigits.slice(0,-1);
 
+  productDigits=productDigits.padStart(13,"0").slice(0,13);
 
-  productDigits =
-    padLeft(
-      productDigits,
-      13
-    );
-
-
-  productDigits =
-    productDigits.slice(
-      0,
-      13
-    );
-
-
-  const paddedPrice =
-    padLeft(
-      price,
-      6
-    );
-
+  const paddedPrice=String(price).padStart(6,"0");
 
   /*
-   * The label is NOT part of this.
-   */
-  const baseNumber =
-    `91${productDigits}${paddedPrice}`;
+    The label is deliberately NOT included.
+    The generated barcode data is:
+    91 + product code + price + check digit.
+  */
+  const base=`91${productDigits}${paddedPrice}`;
+  const full=base+checkDigit(base);
 
+  const card=document.createElement("div");
+  card.className="card";
 
-  const checkDigit =
-    calculateCheckDigit(
-      baseNumber
-    );
+  const head=document.createElement("div");
+  head.className="card-head";
 
+  const title=document.createElement("div");
+  title.className="label";
+  title.textContent=label||"Untitled Barcode";
 
-  const fullBarcode =
-    `${baseNumber}${checkDigit}`;
+  const data=document.createElement("div");
+  data.className="data";
+  data.textContent=full;
 
+  head.append(title,data);
 
-  const id =
-    "barcode-" +
-    Date.now() +
-    "-" +
-    Math.random()
-      .toString(36)
-      .slice(2, 8);
+  const frame=document.createElement("div");
+  frame.className="frame";
 
-
-  const card =
-    document.createElement(
-      "div"
-    );
-
-  card.className =
-    "barcode-card";
-
-
-  const header =
-    document.createElement(
-      "div"
-    );
-
-  header.className =
-    "barcode-card-header";
-
-
-  const labelElement =
-    document.createElement(
-      "div"
-    );
-
-  labelElement.className =
-    "barcode-label";
-
-  labelElement.textContent =
-    label ||
-    "Untitled Barcode";
-
-
-  const dataElement =
-    document.createElement(
-      "div"
-    );
-
-  dataElement.className =
-    "barcode-data";
-
-  dataElement.textContent =
-    fullBarcode;
-
-
-  header.appendChild(
-    labelElement
+  const svg=document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
   );
-
-  header.appendChild(
-    dataElement
-  );
-
-
-  const frame =
-    document.createElement(
-      "div"
-    );
-
-  frame.className =
-    "barcode-frame";
-
-
-  const svg =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "svg"
-    );
-
 
   frame.appendChild(svg);
 
+  const foot=document.createElement("div");
+  foot.className="card-foot";
 
-  const footer =
-    document.createElement(
-      "div"
-    );
+  const remove=document.createElement("button");
+  remove.className="remove";
+  remove.textContent="Remove";
+  remove.onclick=()=>{
+    card.remove();
+    updateEmpty();
+  };
 
-  footer.className =
-    "barcode-footer";
+  foot.appendChild(remove);
+  card.append(head,frame,foot);
+  list.prepend(card);
 
-
-  const deleteButton =
-    document.createElement(
-      "button"
-    );
-
-  deleteButton.type =
-    "button";
-
-  deleteButton.className =
-    "delete-button";
-
-  deleteButton.textContent =
-    "Remove";
-
-
-  deleteButton.addEventListener(
-    "click",
-    () => {
-
-      card.remove();
-
-      updateEmptyState();
-
-    }
-  );
-
-
-  footer.appendChild(
-    deleteButton
-  );
-
-
-  card.appendChild(
-    header
-  );
-
-  card.appendChild(
-    frame
-  );
-
-  card.appendChild(
-    footer
-  );
-
-
-  document
-    .getElementById(
-      "barcodeList"
-    )
-    .prepend(card);
-
-
-  try {
-
-    JsBarcode(
-      svg,
-      fullBarcode,
-      {
-
-        format: "CODE128",
-
-        displayValue: true,
-
-        fontSize: 16,
-
-        width: 2,
-
-        height: 85,
-
-        margin: 5,
-
-        background: "#ffffff",
-
-        lineColor: "#111111",
-
-        fontOptions: "bold"
-
-      }
-    );
-
-  } catch (err) {
-
-    console.error(
-      "Barcode rendering error:",
-      err
-    );
-
-    frame.textContent =
-      "Barcode rendering failed.";
-
+  try{
+    JsBarcode(svg,full,{
+      format:"CODE128",
+      displayValue:true,
+      fontSize:16,
+      width:2,
+      height:85,
+      margin:5,
+      background:"#fff",
+      lineColor:"#111",
+      fontOptions:"bold"
+    });
+  }catch(e){
+    frame.textContent="Barcode rendering failed.";
   }
 
-
-  labelInput.value = "";
-  productCode.value = "";
-
-
-  updateEmptyState();
-
+  labelInput.value="";
+  productCode.value="";
+  updateEmpty();
 
   card.scrollIntoView({
-    behavior: "smooth",
-    block: "center"
+    behavior:"smooth",
+    block:"center"
   });
-
 }
 
+$("generate").onclick=generateBarcode;
 
-document
-  .getElementById(
-    "generateButton"
-  )
-  .addEventListener(
-    "click",
-    generateBarcode
-  );
+$("plus").onclick=()=>{
+  window.scrollTo({top:0,behavior:"smooth"});
+  setTimeout(()=>labelInput.focus(),350);
+};
 
-
-/* =========================================================
-   PLUS BUTTON
-========================================================= */
-
-document
-  .getElementById(
-    "floatingAdd"
-  )
-  .addEventListener(
-    "click",
-    () => {
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-
-
-      setTimeout(
-        () => {
-
-          document
-            .getElementById(
-              "barcodeLabel"
-            )
-            .focus();
-
-        },
-        350
-      );
-
-    }
-  );
-
-
-function updateEmptyState() {
-
-  const list =
-    document.getElementById(
-      "barcodeList"
-    );
-
-  const empty =
-    document.getElementById(
-      "emptyState"
-    );
-
-
-  empty.style.display =
-    list.children.length === 0
-      ? "block"
-      : "none";
-
+function updateEmpty(){
+  empty.style.display=
+    list.children.length?"none":"block";
 }
 
-
-updateEmptyState();
-
-
-/* =========================================================
-   CAMERA SCANNER
-========================================================= */
-
-let barcodeScanner = null;
-
-let scannerRunning = false;
-
-let lastScan = "";
-
-let lastScanTime = 0;
+updateEmpty();
 
 
-const scanButton =
-  document.getElementById(
-    "scanButton"
-  );
+/* Quagga2 scanner */
 
+function openScanner(){
+  $("overlay").classList.add("open");
+  $("status").textContent="Requesting camera…";
+  $("status").className="status";
 
-const scannerOverlay =
-  document.getElementById(
-    "scannerOverlay"
-  );
-
-
-const closeScanner =
-  document.getElementById(
-    "closeScanner"
-  );
-
-
-const scannerStatus =
-  document.getElementById(
-    "scannerStatus"
-  );
-
-
-/*
- * Open scanner.
- */
-async function openScanner() {
-
-  scannerOverlay.classList.add(
-    "open"
-  );
-
-
-  scannerStatus.textContent =
-    "Requesting camera…";
-
-
-  scannerStatus.className =
-    "scanner-status";
-
-
-  await startBarcodeScanner();
-
+  startScanner();
 }
 
+function startScanner(){
 
-/*
- * Start camera.
- */
-async function startBarcodeScanner() {
-
-  if (scannerRunning) {
-    return;
-  }
-
-
-  /*
-   * Check that the library actually loaded.
-   */
-  if (
-    typeof Html5Qrcode ===
-    "undefined"
-  ) {
-
-    scannerStatus.textContent =
+  if(typeof Quagga==="undefined"){
+    $("status").textContent=
       "Scanner library failed to load.";
-
-    scannerStatus.className =
-      "scanner-status error";
-
+    $("status").className="status error";
     return;
   }
 
+  if(!navigator.mediaDevices||
+     !navigator.mediaDevices.getUserMedia){
 
-  try {
+    $("status").textContent=
+      "This browser cannot access the camera.";
+    $("status").className="status error";
+    return;
+  }
 
-    barcodeScanner =
-      new Html5Qrcode(
-        "barcodeScanner"
-      );
+  scanning=true;
 
+  Quagga.init({
 
-    const formats = [
+    inputStream:{
+      name:"Live",
+      type:"LiveStream",
 
-      Html5QrcodeSupportedFormats.EAN_13,
+      target:document.querySelector("#quagga"),
 
-      Html5QrcodeSupportedFormats.EAN_8
-
-    ];
-
-
-    const config = {
-
-      /*
-       * 30 FPS gives the decoder
-       * plenty of frames.
-       */
-      fps: 30,
-
-
-      /*
-       * Wide scan area.
-       */
-      qrbox: function(
-        width,
-        height
-      ) {
-
-        return {
-
-          width:
-            Math.floor(
-              width * 0.92
-            ),
-
-          height:
-            Math.floor(
-              height * 0.48
-            )
-
-        };
-
+      constraints:{
+        facingMode:"environment",
+        width:{min:640,ideal:1280,max:1920},
+        height:{min:480,ideal:720,max:1080}
       },
 
-
-      aspectRatio:
-        16 / 9,
-
-
-      formatsToSupport:
-        formats,
-
-
-      experimentalFeatures: {
-
-        useBarCodeDetectorIfSupported:
-          true
-
+      area:{
+        top:"10%",
+        right:"5%",
+        left:"5%",
+        bottom:"10%"
       }
+    },
 
-    };
+    locator:{
+      patchSize:"medium",
+      halfSample:false
+    },
 
+    frequency:30,
 
-    /*
-     * Ask specifically for the rear camera.
-     */
-    await barcodeScanner.start(
+    numOfWorkers:2,
 
-      {
-        facingMode: {
-          ideal: "environment"
-        }
-      },
+    locate:true,
 
-      config,
+    decoder:{
+      readers:[
+        "ean_reader",
+        "ean_8_reader"
+      ],
+      multiple:false
+    },
 
-      handleBarcodeDetected,
+    locate:true,
 
-      () => {
-        /*
-         * Failed frames are ignored.
-         * Scanner continuously tries again.
-         */
-      }
+    debug:{
+      drawBoundingBox:false,
+      showFrequency:false,
+      drawScanline:false,
+      showPattern:false
+    }
 
-    );
+  },err=>{
 
+    if(err){
+      console.error(err);
 
-    scannerRunning =
-      true;
+      scanning=false;
 
+      $("status").textContent=
+        cameraError(err);
 
-    scannerStatus.textContent =
+      $("status").className=
+        "status error";
+
+      return;
+    }
+
+    $("status").textContent=
       "Camera ready — point it at a barcode.";
 
+    Quagga.start();
 
     /*
-     * Attempt continuous autofocus.
-     */
-    try {
+      Try continuous autofocus on Safari/iOS.
+    */
+    setTimeout(()=>{
+      try{
+        const video=
+          document.querySelector("#quagga video");
 
-      const video =
-        document.querySelector(
-          "#barcodeScanner video"
-        );
+        const track=
+          video?.srcObject?.getVideoTracks?.()[0];
 
+        if(track?.getCapabilities){
+          const caps=track.getCapabilities();
 
-      if (
-        video &&
-        video.srcObject
-      ) {
-
-        const tracks =
-          video.srcObject
-            .getVideoTracks();
-
-
-        if (tracks.length > 0) {
-
-          const track =
-            tracks[0];
-
-
-          if (
-            track.getCapabilities
-          ) {
-
-            const capabilities =
-              track.getCapabilities();
-
-
-            if (
-              capabilities.focusMode &&
-              capabilities.focusMode.includes(
-                "continuous"
-              )
-            ) {
-
-              await track.applyConstraints({
-
-                advanced: [
-
-                  {
-                    focusMode:
-                      "continuous"
-                  }
-
-                ]
-
-              });
-
-            }
-
+          if(caps.focusMode?.includes("continuous")){
+            track.applyConstraints({
+              advanced:[
+                {focusMode:"continuous"}
+              ]
+            }).catch(()=>{});
           }
-
         }
+      }catch(e){}
+    },500);
 
-      }
-
-    } catch (focusError) {
-
-      console.log(
-        "Autofocus control unavailable:",
-        focusError
-      );
-
-    }
-
-
-  } catch (error) {
-
-    console.error(
-      "Camera error:",
-      error
-    );
-
-
-    let message =
-      "Could not start the camera.";
-
-
-    /*
-     * Give useful errors instead of
-     * silently failing.
-     */
-    if (
-      location.protocol !== "https:" &&
-      location.hostname !== "localhost"
-    ) {
-
-      message =
-        "Camera requires HTTPS.";
-
-    } else if (
-      error &&
-      String(error)
-        .toLowerCase()
-        .includes("permission")
-    ) {
-
-      message =
-        "Camera permission was denied. Allow camera access in Safari settings.";
-
-    } else if (
-      error &&
-      String(error)
-        .toLowerCase()
-        .includes("notallowed")
-    ) {
-
-      message =
-        "Camera access was blocked. Allow camera access for this website.";
-
-    } else if (
-      error &&
-      String(error)
-        .toLowerCase()
-        .includes("notfound")
-    ) {
-
-      message =
-        "No camera was found on this device.";
-
-    } else if (error) {
-
-      message =
-        "Camera failed: " +
-        String(error)
-          .replace(
-            /^Error:\s*/i,
-            ""
-          )
-          .slice(0, 140);
-
-    }
-
-
-    scannerStatus.textContent =
-      message;
-
-    scannerStatus.className =
-      "scanner-status error";
-
-
-    barcodeScanner =
-      null;
-
-    scannerRunning =
-      false;
-
-  }
-
+  });
 }
 
 
-/*
- * Barcode detected.
- */
-async function handleBarcodeDetected(
-  decodedText
-) {
+Quagga.onDetected(result=>{
 
-  const now =
-    Date.now();
-
-
-  /*
-   * Prevent duplicate reads.
-   */
-  if (
-    decodedText === lastScan &&
-    now - lastScanTime < 1500
-  ) {
-
+  if(!scanning||!result?.codeResult?.code)
     return;
 
+  const code=
+    String(result.codeResult.code)
+      .replace(/\D/g,"");
+
+  const format=
+    result.codeResult.format;
+
+  if(
+    (format!=="ean_13"&&format!=="ean_8")||
+    (code.length!==8&&code.length!==13)
+  ){
+    return;
   }
-
-
-  lastScan =
-    decodedText;
-
-  lastScanTime =
-    now;
-
-
-  const digits =
-    decodedText.replace(
-      /\D/g,
-      ""
-    );
-
 
   /*
-   * Only EAN-8 and EAN-13.
-   */
-  if (
-    digits.length !== 8 &&
-    digits.length !== 13
-  ) {
+    Require the same result twice quickly.
+    This greatly reduces accidental reads.
+  */
+  const now=Date.now();
 
+  if(code!==lastCode){
+    lastCode=code;
+    lastCodeTime=now;
     return;
-
   }
 
+  if(now-lastCodeTime<100){
+    return;
+  }
 
-  scannerStatus.textContent =
+  scanning=false;
+
+  productCode.value=
+    code.slice(0,13);
+
+  $("status").textContent=
     "✓ Barcode detected";
 
+  $("status").className=
+    "status success";
 
-  scannerStatus.className =
-    "scanner-status success";
+  setTimeout(closeScanner,250);
 
-
-  /*
-   * Put result into the product box.
-   */
-  productCode.value =
-    digits.slice(0, 13);
+});
 
 
-  await stopBarcodeScanner();
+function cameraError(err){
 
+  const text=
+    String(err||"").toLowerCase();
 
-  setTimeout(
-    () => {
+  if(text.includes("permission")||
+     text.includes("notallowed"))
+    return "Camera permission was denied. Allow camera access for this website.";
 
-      scannerOverlay.classList.remove(
-        "open"
-      );
+  if(text.includes("notfound"))
+    return "No camera was found.";
 
-    },
-    250
-  );
+  if(location.protocol!=="https:"&&
+     location.hostname!=="localhost")
+    return "Camera access requires HTTPS.";
 
+  return "Could not start the camera. Check your browser camera permission.";
 }
 
 
-/*
- * Stop camera.
- */
-async function stopBarcodeScanner() {
+function closeScanner(){
 
-  if (
-    !barcodeScanner ||
-    !scannerRunning
-  ) {
+  scanning=false;
 
-    return;
+  try{
+    if(typeof Quagga!=="undefined"){
+      Quagga.stop();
+      Quagga.offDetected();
+    }
+  }catch(e){}
 
-  }
+  $("quagga").innerHTML="";
+  $("overlay").classList.remove("open");
 
-
-  try {
-
-    await barcodeScanner.stop();
-
-    barcodeScanner.clear();
-
-  } catch (error) {
-
-    console.log(
-      "Scanner cleanup:",
-      error
-    );
-
-  }
-
-
-  scannerRunning =
-    false;
-
-  barcodeScanner =
-    null;
-
+  lastCode="";
+  lastCodeTime=0;
 }
 
+$("scanButton").onclick=openScanner;
 
-/*
- * Close scanner.
- */
-async function closeBarcodeScanner() {
+$("close").onclick=closeScanner;
 
-  await stopBarcodeScanner();
+$("overlay").onclick=e=>{
+  if(e.target===$("overlay"))
+    closeScanner();
+};
 
-  scannerOverlay.classList.remove(
-    "open"
-  );
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden&&scanning)
+    closeScanner();
+});
 
-}
-
-
-/*
- * Camera button.
- */
-scanButton.addEventListener(
-  "click",
-  openScanner
-);
-
-
-/*
- * X button.
- */
-closeScanner.addEventListener(
-  "click",
-  closeBarcodeScanner
-);
-
-
-/*
- * Tap outside modal.
- */
-scannerOverlay.addEventListener(
-  "click",
-  event => {
-
-    if (
-      event.target ===
-      scannerOverlay
-    ) {
-
-      closeBarcodeScanner();
-
-    }
-
-  }
-);
-
-
-/*
- * Stop camera if user leaves page.
- */
-document.addEventListener(
-  "visibilitychange",
-  () => {
-
-    if (
-      document.hidden &&
-      scannerRunning
-    ) {
-
-      stopBarcodeScanner();
-
-    }
-
-  }
-);
-
-
-/*
- * Escape key.
- */
-document.addEventListener(
-  "keydown",
-  event => {
-
-    if (
-      event.key === "Escape" &&
-      scannerOverlay.classList.contains(
-        "open"
-      )
-    ) {
-
-      closeBarcodeScanner();
-
-    }
-
-  }
-);
-
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&$("overlay").classList.contains("open"))
+    closeScanner();
+});
 </script>
 
 </body>
