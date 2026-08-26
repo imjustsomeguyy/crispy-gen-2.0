@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#3A3A3A">
-<title>E's Sainsbury's Gen</title>
+<title>PLACEHOLDER1</title>
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
@@ -18,9 +18,9 @@
   --border2:#6C6C6C;
   --text:#eee;
   --muted:#aaa;
-  --accent:#8B2028;
-  --bright:#D92838;
-  --rgb:217,40,56;
+  --accent:#5B5B5B;
+  --bright:#fff;
+  --rgb:255,255,255;
 }
 
 *{box-sizing:border-box}
@@ -35,7 +35,12 @@ body{
     radial-gradient(circle at 50% -15%,#6C6C6C 0,#4A4A4A 30%,#3A3A3A 68%,#303030 100%);
 }
 
-.app{width:min(520px,100%);margin:auto}
+button,input{font:inherit}
+
+.app{
+  width:min(520px,100%);
+  margin:auto;
+}
 
 .top{
   height:35px;
@@ -135,7 +140,9 @@ header p{
   box-shadow:0 25px 60px #0005,inset 0 1px #ffffff08;
 }
 
-.field{margin-bottom:15px}
+.field{
+  margin-bottom:15px;
+}
 
 label{
   display:block;
@@ -159,11 +166,15 @@ input{
   font-size:15px;
 }
 
-input::placeholder{color:#858585}
+input::placeholder{
+  color:#858585;
+}
 
 input:focus{
   border-color:var(--bright);
-  box-shadow:0 0 0 3px rgba(var(--rgb),.12),0 0 14px rgba(var(--rgb),.12);
+  box-shadow:
+    0 0 0 3px rgba(var(--rgb),.12),
+    0 0 14px rgba(var(--rgb),.12);
 }
 
 .code-row{
@@ -171,7 +182,9 @@ input:focus{
   gap:8px;
 }
 
-.code-row input{flex:1}
+.code-row input{
+  flex:1;
+}
 
 .scan{
   width:48px;
@@ -204,7 +217,8 @@ input:focus{
   cursor:pointer;
 }
 
-.price:hover,.price.active{
+.price:hover,
+.price.active{
   border-color:var(--bright);
   box-shadow:0 0 11px rgba(var(--rgb),.25);
 }
@@ -270,16 +284,37 @@ input:focus{
 }
 
 .card{
+  position:relative;
   overflow:hidden;
   border:1px solid var(--border2);
   border-radius:18px;
   background:var(--card);
   box-shadow:0 12px 30px #0004;
+  cursor:pointer;
 }
 
 .card-head{
-  padding:14px 16px 9px;
+  position:relative;
+  min-height:62px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  padding:13px 45px 13px 16px;
   text-align:center;
+}
+
+.card-head::after{
+  content:"⌄";
+  position:absolute;
+  right:16px;
+  font-size:17px;
+  color:#999;
+  transition:transform .2s;
+}
+
+.card.open .card-head::after{
+  transform:rotate(180deg);
 }
 
 .label{
@@ -291,6 +326,14 @@ input:focus{
   margin-top:3px;
   color:#999;
   font-size:11px;
+}
+
+.card-content{
+  display:none;
+}
+
+.card.open .card-content{
+  display:block;
 }
 
 .frame{
@@ -335,12 +378,16 @@ input:focus{
   color:white;
   font-size:29px;
   cursor:pointer;
-  box-shadow:0 0 12px rgba(var(--rgb),.5),0 12px 30px #0007;
+  box-shadow:
+    0 0 12px rgba(var(--rgb),.5),
+    0 12px 30px #0007;
 }
 
 .plus:hover{
   transform:scale(1.07);
-  box-shadow:0 0 20px rgba(var(--rgb),.8),0 12px 30px #0007;
+  box-shadow:
+    0 0 20px rgba(var(--rgb),.8),
+    0 12px 30px #0007;
 }
 
 /* Scanner */
@@ -357,7 +404,9 @@ input:focus{
   backdrop-filter:blur(8px);
 }
 
-.overlay.open{display:flex}
+.overlay.open{
+  display:flex;
+}
 
 .scanner{
   width:min(520px,100%);
@@ -468,7 +517,9 @@ input:focus{
   text-shadow:0 0 9px rgba(var(--rgb),.7);
 }
 
-.status.error{color:#ff5967}
+.status.error{
+  color:#ff5967;
+}
 
 .tip{
   padding:5px 17px 16px;
@@ -478,10 +529,23 @@ input:focus{
 }
 
 @media(max-width:430px){
-  body{padding-left:10px;padding-right:10px}
-  .generator{padding:16px}
-  .plus{right:16px;bottom:16px}
-  .camera{height:300px}
+  body{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .generator{
+    padding:16px;
+  }
+
+  .plus{
+    right:16px;
+    bottom:16px;
+  }
+
+  .camera{
+    height:300px;
+  }
 }
 </style>
 </head>
@@ -491,6 +555,7 @@ input:focus{
 <div class="app">
 
   <div class="top">
+
     <button class="accent-btn" id="accentButton">
       <span class="accent-dot"></span>
     </button>
@@ -499,17 +564,19 @@ input:focus{
       <div class="palette-title">Accent colour</div>
       <div class="colours" id="colours"></div>
     </div>
+
   </div>
 
   <header>
-    <h1>E's Sainsbury's Gen</h1>
-    <p>Groupcat Access</p>
+    <h1>PLACEHOLDER1</h1>
+    <p>PLACEHOLDER2</p>
   </header>
 
   <main class="generator">
 
     <div class="field">
       <label>Label</label>
+
       <input
         id="barcodeLabel"
         type="text"
@@ -519,9 +586,11 @@ input:focus{
     </div>
 
     <div class="field">
+
       <label>Product Code</label>
 
       <div class="code-row">
+
         <input
           id="productCode"
           type="text"
@@ -531,20 +600,38 @@ input:focus{
           autocomplete="off"
         >
 
-        <button class="scan" id="scanButton" title="Scan barcode">
-          📷
-        </button>
+        <button
+          class="scan"
+          id="scanButton"
+          title="Scan barcode"
+        >📷</button>
+
       </div>
+
     </div>
 
     <div class="field">
+
       <label>Price</label>
 
       <div class="prices">
-        <button class="price" data-price="10">10p</button>
-        <button class="price" data-price="49">49p</button>
-        <button class="price" data-price="100">£1</button>
-        <button class="price" data-price="custom">Custom</button>
+
+        <button class="price" data-price="10">
+          10p
+        </button>
+
+        <button class="price" data-price="49">
+          49p
+        </button>
+
+        <button class="price" data-price="100">
+          £1
+        </button>
+
+        <button class="price" data-price="custom">
+          Custom
+        </button>
+
       </div>
 
       <div id="customPrice">
@@ -557,6 +644,7 @@ input:focus{
           placeholder="Price in pence"
         >
       </div>
+
     </div>
 
     <div class="error" id="error"></div>
@@ -567,7 +655,9 @@ input:focus{
 
   </main>
 
-  <div class="saved-title">Saved Barcodes</div>
+  <div class="saved-title">
+    Saved Barcodes
+  </div>
 
   <div class="empty" id="empty">
     No barcodes generated yet.
@@ -577,27 +667,35 @@ input:focus{
 
 </div>
 
+
 <button class="plus" id="plus">+</button>
 
 
-<!-- CAMERA -->
+<!-- CAMERA SCANNER -->
 
 <div class="overlay" id="overlay">
 
   <div class="scanner">
 
     <div class="scanner-head">
+
       <div>
         <h2>Scan Barcode</h2>
         <p>EAN-8 / EAN-13</p>
       </div>
 
-      <button class="close" id="close">×</button>
+      <button class="close" id="close">
+        ×
+      </button>
+
     </div>
 
     <div class="camera">
+
       <div id="quagga"></div>
+
       <div class="target"></div>
+
     </div>
 
     <div class="status" id="status">
@@ -615,6 +713,9 @@ input:focus{
 
 
 <script>
+
+/* Elements */
+
 const $=id=>document.getElementById(id);
 
 const productCode=$("productCode");
@@ -633,58 +734,102 @@ let lastCodeTime=0;
 /* Accent colours */
 
 const accents=[
+
+  ["#5B5B5B","#FFFFFF"],
+
   ["#8B2028","#D92838"],
   ["#7A2419","#F04432"],
   ["#8A4B16","#FF8A24"],
   ["#75600D","#E8C51A"],
+
   ["#39751C","#70E83E"],
   ["#167044","#32E88A"],
   ["#116A6A","#25E0DF"],
   ["#145A86","#28AFFF"],
+
   ["#273E91","#536FFF"],
   ["#55349B","#965CFF"],
   ["#762C91","#D24CFF"],
   ["#8D2869","#FF4DB8"],
+
   ["#96304A","#FF4F72"],
   ["#52651A","#B8E631"],
   ["#1E7770","#3DFFD9"],
   ["#5A5A5A","#D5D5D5"]
+
 ];
 
 function rgb(hex){
+
   const n=parseInt(hex.slice(1),16);
+
   return `${n>>16},${(n>>8)&255},${n&255}`;
+
 }
 
 function setAccent(i){
+
   const [main,bright]=accents[i];
 
-  document.documentElement.style.setProperty("--accent",main);
-  document.documentElement.style.setProperty("--bright",bright);
-  document.documentElement.style.setProperty("--rgb",rgb(bright));
+  document.documentElement.style.setProperty(
+    "--accent",
+    main
+  );
+
+  document.documentElement.style.setProperty(
+    "--bright",
+    bright
+  );
+
+  document.documentElement.style.setProperty(
+    "--rgb",
+    rgb(bright)
+  );
 
   document.querySelectorAll(".colour").forEach((x,n)=>{
     x.classList.toggle("selected",n===i);
   });
+
 }
 
+
+/* Build colour picker */
+
 accents.forEach((c,i)=>{
-  const b=document.createElement("button");
-  b.className="colour";
-  b.style.background=c[1];
-  b.style.color=c[1];
-  b.onclick=()=>{
+
+  const button=document.createElement("button");
+
+  button.className="colour";
+
+  button.style.background=c[1];
+  button.style.color=c[1];
+
+  button.onclick=()=>{
+
     setAccent(i);
+
     $("palette").classList.remove("open");
+
   };
-  $("colours").appendChild(b);
+
+  $("colours").appendChild(button);
+
 });
+
+
+/* White default */
 
 setAccent(0);
 
+
+/* Accent menu */
+
 $("accentButton").onclick=e=>{
+
   e.stopPropagation();
+
   $("palette").classList.toggle("open");
+
 };
 
 $("palette").onclick=e=>e.stopPropagation();
@@ -694,18 +839,24 @@ document.onclick=()=>{
 };
 
 
-/* Product code */
+/* Product code limit */
 
 productCode.addEventListener("input",()=>{
+
   productCode.value=
-    productCode.value.replace(/\D/g,"").slice(0,13);
+    productCode.value
+      .replace(/\D/g,"")
+      .slice(0,13);
+
 });
 
 
-/* Prices */
+/* Price buttons */
 
 document.querySelectorAll(".price").forEach(button=>{
+
   button.onclick=()=>{
+
     document.querySelectorAll(".price")
       .forEach(x=>x.classList.remove("active"));
 
@@ -714,34 +865,55 @@ document.querySelectorAll(".price").forEach(button=>{
     const value=button.dataset.price;
 
     if(value==="custom"){
+
       selectedPrice=null;
+
       $("customPrice").style.display="block";
+
     }else{
+
       selectedPrice=Number(value);
+
       priceInput.value=value;
+
       $("customPrice").style.display="none";
+
     }
+
   };
+
 });
 
 
-/* Barcode */
+/* Check digit */
 
 function checkDigit(input){
+
   let sum=0;
 
   for(let i=0;i<input.length;i++){
-    const digit=Number(input[input.length-1-i]);
+
+    const digit=Number(
+      input[input.length-1-i]
+    );
+
     sum+=digit*(i%2===0?3:1);
+
   }
 
   return (10-(sum%10))%10;
+
 }
 
+
+/* Generate */
+
 function generateBarcode(){
+
   error.style.display="none";
 
   const product=productCode.value.trim();
+
   const label=labelInput.value.trim();
 
   const price=
@@ -749,202 +921,410 @@ function generateBarcode(){
       ?selectedPrice
       :Number(priceInput.value);
 
+
   const digits=product.replace(/\D/g,"");
 
+
   if(digits.length<8){
-    error.textContent="Enter a valid barcode of at least 8 digits.";
+
+    error.textContent=
+      "Enter a valid barcode of at least 8 digits.";
+
     error.style.display="block";
+
     return;
+
   }
+
 
   if(!Number.isFinite(price)||price<1){
-    error.textContent="Enter a valid price in pence.";
+
+    error.textContent=
+      "Enter a valid price in pence.";
+
     error.style.display="block";
+
     return;
+
   }
 
+
   let productDigits=digits;
+
 
   if(productDigits.length===14)
     productDigits=productDigits.slice(0,-1);
 
-  productDigits=productDigits.padStart(13,"0").slice(0,13);
 
-  const paddedPrice=String(price).padStart(6,"0");
+  productDigits=
+    productDigits
+      .padStart(13,"0")
+      .slice(0,13);
+
+
+  const paddedPrice=
+    String(price).padStart(6,"0");
+
 
   /*
-    The label is deliberately NOT included.
-    The generated barcode data is:
-    91 + product code + price + check digit.
+    LABEL IS NOT INCLUDED.
+    Only this data is embedded:
+    91 + product + price + check digit
   */
-  const base=`91${productDigits}${paddedPrice}`;
-  const full=base+checkDigit(base);
+
+  const base=
+    `91${productDigits}${paddedPrice}`;
+
+  const full=
+    base+checkDigit(base);
+
+
+  /* Close currently open cards */
+
+  document.querySelectorAll(".card.open")
+    .forEach(card=>{
+      card.classList.remove("open");
+    });
+
+
+  /* Card */
 
   const card=document.createElement("div");
-  card.className="card";
+
+  card.className="card open";
+
+
+  /* Header */
 
   const head=document.createElement("div");
+
   head.className="card-head";
 
+
   const title=document.createElement("div");
+
   title.className="label";
-  title.textContent=label||"Untitled Barcode";
+
+  title.textContent=
+    label||"Untitled Barcode";
+
 
   const data=document.createElement("div");
+
   data.className="data";
+
   data.textContent=full;
+
 
   head.append(title,data);
 
+
+  /* Content */
+
+  const content=document.createElement("div");
+
+  content.className="card-content";
+
+
   const frame=document.createElement("div");
+
   frame.className="frame";
+
 
   const svg=document.createElementNS(
     "http://www.w3.org/2000/svg",
     "svg"
   );
 
+
   frame.appendChild(svg);
 
+
+  /* Footer */
+
   const foot=document.createElement("div");
+
   foot.className="card-foot";
 
+
   const remove=document.createElement("button");
+
   remove.className="remove";
+
   remove.textContent="Remove";
-  remove.onclick=()=>{
+
+
+  remove.onclick=e=>{
+
+    e.stopPropagation();
+
     card.remove();
+
     updateEmpty();
+
   };
 
+
   foot.appendChild(remove);
-  card.append(head,frame,foot);
+
+
+  content.append(frame,foot);
+
+  card.append(head,content);
+
+
+  /* Open/close */
+
+  card.onclick=()=>{
+
+    document.querySelectorAll(".card.open")
+      .forEach(other=>{
+
+        if(other!==card)
+          other.classList.remove("open");
+
+      });
+
+    card.classList.toggle("open");
+
+  };
+
+
   list.prepend(card);
 
+
+  /* Render barcode */
+
   try{
+
     JsBarcode(svg,full,{
+
       format:"CODE128",
+
       displayValue:true,
+
       fontSize:16,
+
       width:2,
+
       height:85,
+
       margin:5,
+
       background:"#fff",
+
       lineColor:"#111",
+
       fontOptions:"bold"
+
     });
+
   }catch(e){
-    frame.textContent="Barcode rendering failed.";
+
+    frame.textContent=
+      "Barcode rendering failed.";
+
   }
+
+
+  /* Reset */
 
   labelInput.value="";
   productCode.value="";
+
   updateEmpty();
+
+
+  /* Show newest barcode */
 
   card.scrollIntoView({
     behavior:"smooth",
     block:"center"
   });
+
 }
+
+
+/* Generate button */
 
 $("generate").onclick=generateBarcode;
 
+
+/* Plus */
+
 $("plus").onclick=()=>{
-  window.scrollTo({top:0,behavior:"smooth"});
-  setTimeout(()=>labelInput.focus(),350);
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  setTimeout(()=>{
+    labelInput.focus();
+  },350);
+
 };
 
+
+/* Empty state */
+
 function updateEmpty(){
+
   empty.style.display=
-    list.children.length?"none":"block";
+    list.children.length
+      ?"none"
+      :"block";
+
 }
 
 updateEmpty();
 
 
-/* Quagga2 scanner */
+/* =========================
+   QUAGGA2 CAMERA SCANNER
+   ========================= */
 
 function openScanner(){
+
   $("overlay").classList.add("open");
-  $("status").textContent="Requesting camera…";
+
+  $("status").textContent=
+    "Requesting camera…";
+
   $("status").className="status";
 
   startScanner();
+
 }
+
 
 function startScanner(){
 
   if(typeof Quagga==="undefined"){
+
     $("status").textContent=
       "Scanner library failed to load.";
-    $("status").className="status error";
+
+    $("status").className=
+      "status error";
+
     return;
+
   }
 
-  if(!navigator.mediaDevices||
-     !navigator.mediaDevices.getUserMedia){
+
+  if(
+    !navigator.mediaDevices||
+    !navigator.mediaDevices.getUserMedia
+  ){
 
     $("status").textContent=
       "This browser cannot access the camera.";
-    $("status").className="status error";
+
+    $("status").className=
+      "status error";
+
     return;
+
   }
 
+
   scanning=true;
+
 
   Quagga.init({
 
     inputStream:{
+
       name:"Live",
+
       type:"LiveStream",
 
-      target:document.querySelector("#quagga"),
+      target:
+        document.querySelector("#quagga"),
 
       constraints:{
-        facingMode:"environment",
-        width:{min:640,ideal:1280,max:1920},
-        height:{min:480,ideal:720,max:1080}
+
+        facingMode:{
+          ideal:"environment"
+        },
+
+        width:{
+          min:640,
+          ideal:1280,
+          max:1920
+        },
+
+        height:{
+          min:480,
+          ideal:720,
+          max:1080
+        }
+
       },
 
       area:{
+
         top:"10%",
         right:"5%",
         left:"5%",
         bottom:"10%"
+
       }
+
     },
 
+
     locator:{
+
       patchSize:"medium",
+
       halfSample:false
+
     },
+
 
     frequency:30,
 
+
     numOfWorkers:2,
 
+
     locate:true,
+
 
     decoder:{
+
       readers:[
+
         "ean_reader",
+
         "ean_8_reader"
+
       ],
+
       multiple:false
+
     },
 
-    locate:true,
 
     debug:{
+
       drawBoundingBox:false,
+
       showFrequency:false,
+
       drawScanline:false,
+
       showPattern:false
+
     }
 
   },err=>{
 
+
     if(err){
+
       console.error(err);
 
       scanning=false;
@@ -956,149 +1336,277 @@ function startScanner(){
         "status error";
 
       return;
+
     }
+
 
     $("status").textContent=
       "Camera ready — point it at a barcode.";
 
+
     Quagga.start();
 
-    /*
-      Try continuous autofocus on Safari/iOS.
-    */
+
+    /* Attempt continuous autofocus */
+
     setTimeout(()=>{
+
       try{
+
         const video=
-          document.querySelector("#quagga video");
+          document.querySelector(
+            "#quagga video"
+          );
 
         const track=
-          video?.srcObject?.getVideoTracks?.()[0];
+          video?.srcObject
+            ?.getVideoTracks?.()[0];
+
 
         if(track?.getCapabilities){
-          const caps=track.getCapabilities();
 
-          if(caps.focusMode?.includes("continuous")){
+          const caps=
+            track.getCapabilities();
+
+
+          if(
+            caps.focusMode?.includes(
+              "continuous"
+            )
+          ){
+
             track.applyConstraints({
+
               advanced:[
-                {focusMode:"continuous"}
+                {
+                  focusMode:"continuous"
+                }
               ]
+
             }).catch(()=>{});
+
           }
+
         }
+
       }catch(e){}
+
     },500);
 
   });
+
 }
 
 
+/* Detection */
+
 Quagga.onDetected(result=>{
 
-  if(!scanning||!result?.codeResult?.code)
+  if(
+    !scanning||
+    !result?.codeResult?.code
+  )
     return;
+
 
   const code=
     String(result.codeResult.code)
       .replace(/\D/g,"");
 
+
   const format=
     result.codeResult.format;
 
+
   if(
-    (format!=="ean_13"&&format!=="ean_8")||
-    (code.length!==8&&code.length!==13)
+    (format!=="ean_13"&&
+     format!=="ean_8")||
+    (code.length!==8&&
+     code.length!==13)
   ){
+
     return;
+
   }
+
 
   /*
-    Require the same result twice quickly.
-    This greatly reduces accidental reads.
+    Require repeated detection
+    before accepting the result.
   */
+
   const now=Date.now();
 
+
   if(code!==lastCode){
+
     lastCode=code;
+
     lastCodeTime=now;
+
     return;
+
   }
 
-  if(now-lastCodeTime<100){
+
+  if(now-lastCodeTime<100)
     return;
-  }
+
 
   scanning=false;
+
 
   productCode.value=
     code.slice(0,13);
 
+
   $("status").textContent=
     "✓ Barcode detected";
+
 
   $("status").className=
     "status success";
 
-  setTimeout(closeScanner,250);
+
+  setTimeout(
+    closeScanner,
+    250
+  );
 
 });
 
+
+/* Camera errors */
 
 function cameraError(err){
 
   const text=
     String(err||"").toLowerCase();
 
-  if(text.includes("permission")||
-     text.includes("notallowed"))
-    return "Camera permission was denied. Allow camera access for this website.";
 
-  if(text.includes("notfound"))
+  if(
+    text.includes("permission")||
+    text.includes("notallowed")
+  ){
+
+    return(
+      "Camera permission was denied. " +
+      "Allow camera access for this website."
+    );
+
+  }
+
+
+  if(text.includes("notfound")){
+
     return "No camera was found.";
 
-  if(location.protocol!=="https:"&&
-     location.hostname!=="localhost")
-    return "Camera access requires HTTPS.";
+  }
 
-  return "Could not start the camera. Check your browser camera permission.";
+
+  if(
+    location.protocol!=="https:"&&
+    location.hostname!=="localhost"
+  ){
+
+    return(
+      "Camera access requires HTTPS."
+    );
+
+  }
+
+
+  return(
+    "Could not start the camera. " +
+    "Check your browser camera permission."
+  );
+
 }
 
+
+/* Close scanner */
 
 function closeScanner(){
 
   scanning=false;
 
+
   try{
+
     if(typeof Quagga!=="undefined"){
+
       Quagga.stop();
+
       Quagga.offDetected();
+
     }
+
   }catch(e){}
 
+
   $("quagga").innerHTML="";
+
   $("overlay").classList.remove("open");
 
+
   lastCode="";
+
   lastCodeTime=0;
+
 }
 
-$("scanButton").onclick=openScanner;
 
-$("close").onclick=closeScanner;
+/* Scanner controls */
+
+$("scanButton").onclick=
+  openScanner;
+
+
+$("close").onclick=
+  closeScanner;
+
 
 $("overlay").onclick=e=>{
+
   if(e.target===$("overlay"))
     closeScanner();
+
 };
 
-document.addEventListener("visibilitychange",()=>{
-  if(document.hidden&&scanning)
-    closeScanner();
-});
 
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"&&$("overlay").classList.contains("open"))
-    closeScanner();
-});
+document.addEventListener(
+  "visibilitychange",
+  ()=>{
+
+    if(
+      document.hidden&&
+      scanning
+    ){
+
+      closeScanner();
+
+    }
+
+  }
+);
+
+
+document.addEventListener(
+  "keydown",
+  e=>{
+
+    if(
+      e.key==="Escape"&&
+      $("overlay").classList.contains("open")
+    ){
+
+      closeScanner();
+
+    }
+
+  }
+);
+
 </script>
 
 </body>
