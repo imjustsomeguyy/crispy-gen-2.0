@@ -2,48 +2,60 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#3A3A3A">
 
 <title>PLACEHOLDER1</title>
 
+<!-- Barcode generator -->
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+<!-- Camera scanner -->
 <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
 
 <style>
-:root{
-  --bg:#3A3A3A;
-  --card:#4A4A4A;
-  --input:#3A3A3A;
-  --border:#5B5B5B;
-  --border2:#6C6C6C;
-  --text:#eee;
-  --muted:#aaa;
-  --accent:#5B5B5B;
-  --bright:#fff;
-  --rgb:255,255,255;
+:root {
+  --bg: #3A3A3A;
+  --card: #4A4A4A;
+  --input: #3A3A3A;
+  --border: #5B5B5B;
+  --border2: #6C6C6C;
+  --text: #EEEEEE;
+  --muted: #AAAAAA;
+
+  --accent: #5B5B5B;
+  --bright: #FFFFFF;
+  --rgb: 255,255,255;
 }
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-html{
-  background:var(--bg);
+html {
+  background: var(--bg);
 }
 
-body{
-  margin:0;
-  min-height:100vh;
-  padding:20px 14px 100px;
-  overflow-x:hidden;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  color:var(--text);
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 20px 14px 100px;
+  overflow-x: hidden;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  color: var(--text);
+
   background:
     radial-gradient(
       circle at 50% -20%,
-      #6C6C6C 0,
+      #6C6C6C 0%,
       #4A4A4A 32%,
       #3A3A3A 70%,
       #303030 100%
@@ -51,673 +63,905 @@ body{
 }
 
 button,
-input{
-  font:inherit;
+input {
+  font: inherit;
 }
 
-button{
-  touch-action:manipulation;
+button {
+  touch-action: manipulation;
 }
 
-.app{
-  width:min(520px,100%);
-  margin:auto;
+.app {
+  width: min(520px, 100%);
+  margin: auto;
 }
+
 
 /* =========================
-   TOP / ACCENT PICKER
+   ACCENT COLOUR PICKER
 ========================= */
 
-.top{
-  height:36px;
-  display:flex;
-  justify-content:flex-end;
-  position:relative;
-  margin-bottom:2px;
+.top {
+  height: 36px;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  margin-bottom: 2px;
 }
 
-.accent-btn{
-  width:32px;
-  height:32px;
-  border:1px solid var(--border2);
-  border-radius:9px;
-  background:var(--input);
-  cursor:pointer;
-  box-shadow:0 0 9px rgba(var(--rgb),.3);
+.accent-btn {
+  width: 32px;
+  height: 32px;
+
+  border: 1px solid var(--border2);
+  border-radius: 9px;
+
+  background: var(--input);
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 9px rgba(var(--rgb), 0.3);
 }
 
-.accent-dot{
-  display:block;
-  width:12px;
-  height:12px;
-  margin:auto;
-  border-radius:50%;
-  background:var(--bright);
+.accent-dot {
+  display: block;
+
+  width: 12px;
+  height: 12px;
+
+  margin: auto;
+
+  border-radius: 50%;
+
+  background: var(--bright);
+
   box-shadow:
     0 0 5px var(--bright),
     0 0 13px var(--bright);
 }
 
-.palette{
-  display:none;
-  position:absolute;
-  right:0;
-  top:40px;
-  z-index:100;
-  width:190px;
-  padding:12px;
-  border:1px solid var(--border2);
-  border-radius:13px;
-  background:#3A3A3A;
-  box-shadow:0 18px 50px #0009;
+.palette {
+  display: none;
+
+  position: absolute;
+  right: 0;
+  top: 40px;
+
+  z-index: 100;
+
+  width: 190px;
+
+  padding: 12px;
+
+  border: 1px solid var(--border2);
+  border-radius: 13px;
+
+  background: #3A3A3A;
+
+  box-shadow:
+    0 18px 50px #00000099;
 }
 
-.palette.open{
-  display:block;
+.palette.open {
+  display: block;
 }
 
-.palette-title{
-  margin-bottom:9px;
-  color:var(--muted);
-  font-size:10px;
-  font-weight:bold;
-  text-transform:uppercase;
-  letter-spacing:.8px;
+.palette-title {
+  margin-bottom: 9px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+  font-weight: bold;
+
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-.colours{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
+.colours {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 8px;
 }
 
-.colour{
-  width:32px;
-  height:32px;
-  padding:0;
-  border:2px solid transparent;
-  border-radius:9px;
-  cursor:pointer;
+.colour {
+  width: 32px;
+  height: 32px;
+
+  padding: 0;
+
+  border: 2px solid transparent;
+  border-radius: 9px;
+
+  cursor: pointer;
 }
 
-.colour.selected{
-  border-color:white;
+.colour.selected {
+  border-color: white;
+
   box-shadow:
     0 0 8px currentColor,
     0 0 14px currentColor;
 }
 
+
 /* =========================
    HEADER
 ========================= */
 
-header{
-  text-align:center;
-  margin-bottom:20px;
+header {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-h1{
-  margin:0;
-  font-size:25px;
-  letter-spacing:-.5px;
-  text-shadow:0 0 12px rgba(var(--rgb),.3);
+h1 {
+  margin: 0;
+
+  font-size: 25px;
+
+  letter-spacing: -0.5px;
+
+  text-shadow:
+    0 0 12px rgba(var(--rgb), 0.3);
 }
 
-header p{
-  margin:7px 0 0;
-  color:var(--muted);
-  font-size:13px;
+header p {
+  margin: 7px 0 0;
+
+  color: var(--muted);
+
+  font-size: 13px;
 }
+
 
 /* =========================
    GENERATOR
 ========================= */
 
-.generator{
-  padding:20px;
-  border:1px solid var(--border2);
-  border-radius:22px;
-  background:var(--card);
+.generator {
+  padding: 20px;
+
+  border: 1px solid var(--border2);
+  border-radius: 22px;
+
+  background: var(--card);
+
   box-shadow:
-    0 25px 60px #0005,
+    0 25px 60px #00000055,
     inset 0 1px #ffffff08;
 }
 
-.field{
-  margin-bottom:16px;
+.field {
+  margin-bottom: 16px;
 }
 
-label{
-  display:block;
-  margin-bottom:7px;
-  color:#b8b8b8;
-  font-size:10px;
-  font-weight:750;
-  text-transform:uppercase;
-  letter-spacing:.8px;
+label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #B8B8B8;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-input{
-  width:100%;
-  height:50px;
-  padding:0 15px;
-  border:1px solid var(--border2);
-  border-radius:13px;
-  outline:none;
-  background:var(--input);
-  color:var(--text);
-  font-size:16px;
+input {
+  width: 100%;
+  height: 50px;
+
+  padding: 0 15px;
+
+  border: 1px solid var(--border2);
+  border-radius: 13px;
+
+  outline: none;
+
+  background: var(--input);
+  color: var(--text);
+
+  font-size: 16px;
 }
 
-input::placeholder{
-  color:#858585;
+input::placeholder {
+  color: #858585;
 }
 
-input:focus{
-  border-color:var(--bright);
+input:focus {
+  border-color: var(--bright);
+
   box-shadow:
-    0 0 0 3px rgba(var(--rgb),.12),
-    0 0 14px rgba(var(--rgb),.12);
+    0 0 0 3px rgba(var(--rgb), 0.12),
+    0 0 14px rgba(var(--rgb), 0.12);
 }
 
-.code-row{
-  display:flex;
-  gap:9px;
+.code-row {
+  display: flex;
+  gap: 9px;
 }
 
-.code-row input{
-  flex:1;
-  min-width:0;
+.code-row input {
+  flex: 1;
+  min-width: 0;
 }
 
-.scan{
-  width:56px;
-  height:50px;
-  flex-shrink:0;
-  border:1px solid var(--border2);
-  border-radius:13px;
-  background:var(--accent);
-  color:white;
-  font-size:23px;
-  cursor:pointer;
-  box-shadow:0 0 10px rgba(var(--rgb),.25);
+.scan {
+  width: 56px;
+  height: 50px;
+
+  flex-shrink: 0;
+
+  border: 1px solid var(--border2);
+  border-radius: 13px;
+
+  background: var(--accent);
+  color: white;
+
+  font-size: 23px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 10px rgba(var(--rgb), 0.25);
 }
 
-.scan:active{
-  transform:scale(.96);
+.scan:active {
+  transform: scale(0.96);
 }
+
 
 /* =========================
    SWIPE PRICE
 ========================= */
 
-.price-field{
-  margin-bottom:17px;
+.price-field {
+  margin-bottom: 17px;
 }
 
-.price-swipe{
-  position:relative;
-  width:100%;
-  height:82px;
-  overflow:hidden;
-  border:1px solid var(--border2);
-  border-radius:16px;
+.price-swipe {
+  position: relative;
+
+  width: 100%;
+  height: 82px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+
   background:
     linear-gradient(
       145deg,
       var(--input),
       #343434
     );
-  cursor:ew-resize;
-  user-select:none;
-  -webkit-user-select:none;
-  touch-action:pan-y;
+
+  cursor: ew-resize;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  touch-action: pan-y;
+
   box-shadow:
     inset 0 1px #ffffff07,
-    0 7px 18px #0002;
+    0 7px 18px #00000022;
 }
 
-.price-swipe.dragging{
-  border-color:var(--bright);
+.price-swipe.dragging {
+  border-color: var(--bright);
+
   box-shadow:
     inset 0 1px #ffffff0b,
-    0 0 18px rgba(var(--rgb),.28);
+    0 0 18px rgba(var(--rgb), 0.28);
 }
 
-.price-content{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
+.price-content {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: none;
 }
 
-.price-small{
-  margin-bottom:2px;
-  color:var(--muted);
-  font-size:10px;
-  font-weight:bold;
-  text-transform:uppercase;
-  letter-spacing:1px;
+.price-small {
+  margin-bottom: 2px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+  font-weight: bold;
+
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.price-value{
-  font-size:27px;
-  font-weight:800;
-  letter-spacing:-.5px;
-  text-shadow:0 0 10px rgba(var(--rgb),.18);
+.price-value {
+  font-size: 27px;
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+
+  text-shadow:
+    0 0 10px rgba(var(--rgb), 0.18);
 }
 
-.swipe-hint{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:8px;
-  color:#777;
-  text-align:center;
-  font-size:9px;
-  letter-spacing:.3px;
-  pointer-events:none;
+.swipe-arrow {
+  position: absolute;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #777;
+
+  font-size: 19px;
+
+  opacity: 0.65;
+
+  pointer-events: none;
 }
 
-.swipe-arrow{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  color:#777;
-  font-size:19px;
-  opacity:.65;
-  pointer-events:none;
+.swipe-arrow.left {
+  left: 15px;
 }
 
-.swipe-arrow.left{
-  left:15px;
+.swipe-arrow.right {
+  right: 15px;
 }
 
-.swipe-arrow.right{
-  right:15px;
+.price-swipe.changed {
+  border-color: var(--bright);
 }
 
-/* Flash when value changes */
-
-.price-swipe.changed{
-  border-color:var(--bright);
-}
-
-.price-swipe.changed .price-value{
+.price-swipe.changed .price-value {
   text-shadow:
     0 0 5px var(--bright),
-    0 0 15px rgba(var(--rgb),.55);
+    0 0 15px rgba(var(--rgb), 0.55);
 }
+
 
 /* =========================
-   GENERATE
+   QUICK PRICE BUTTONS
 ========================= */
 
-.generate{
-  width:100%;
-  height:51px;
-  border:1px solid var(--bright);
-  border-radius:13px;
-  background:var(--accent);
-  color:white;
-  font-size:15px;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow:0 0 9px rgba(var(--rgb),.4);
+.quick-prices {
+  display: flex;
+
+  gap: 8px;
+
+  margin-top: 10px;
 }
 
-.generate:active{
-  transform:scale(.985);
+.quick-price {
+  flex: 1;
+
+  height: 38px;
+
+  border: 1px solid var(--border2);
+  border-radius: 11px;
+
+  background: var(--input);
+  color: var(--text);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.12s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.generate:hover{
-  box-shadow:0 0 17px rgba(var(--rgb),.65);
+.quick-price:active {
+  transform: scale(0.96);
 }
 
-.error{
-  display:none;
-  margin:0 0 12px;
-  color:#ff5967;
-  font-size:13px;
+.quick-price:hover {
+  border-color: var(--bright);
+
+  box-shadow:
+    0 0 10px rgba(var(--rgb), 0.25);
 }
+
 
 /* =========================
-   SAVED
+   GENERATE BUTTON
 ========================= */
 
-.saved-title{
-  margin:28px 0 10px;
-  color:var(--muted);
-  text-align:center;
-  font-size:10px;
-  font-weight:bold;
-  letter-spacing:1px;
-  text-transform:uppercase;
+.generate {
+  width: 100%;
+  height: 51px;
+
+  border: 1px solid var(--bright);
+  border-radius: 13px;
+
+  background: var(--accent);
+  color: white;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 9px rgba(var(--rgb), 0.4);
 }
 
-.empty{
-  padding:27px 15px;
-  border:1px dashed var(--border2);
-  border-radius:17px;
-  color:var(--muted);
-  text-align:center;
-  font-size:13px;
+.generate:active {
+  transform: scale(0.985);
 }
 
-.list{
-  display:flex;
-  flex-direction:column;
-  gap:13px;
+.generate:hover {
+  box-shadow:
+    0 0 17px rgba(var(--rgb), 0.65);
 }
+
+.error {
+  display: none;
+
+  margin: 0 0 12px;
+
+  color: #FF5967;
+
+  font-size: 13px;
+}
+
+
+/* =========================
+   SAVED BARCODES
+========================= */
+
+.saved-title {
+  margin: 28px 0 10px;
+
+  color: var(--muted);
+
+  text-align: center;
+
+  font-size: 10px;
+  font-weight: bold;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+}
+
+.empty {
+  padding: 27px 15px;
+
+  border: 1px dashed var(--border2);
+  border-radius: 17px;
+
+  color: var(--muted);
+
+  text-align: center;
+
+  font-size: 13px;
+}
+
+.list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 13px;
+}
+
 
 /* =========================
    BARCODE CARDS
 ========================= */
 
-.card{
-  position:relative;
-  overflow:hidden;
-  border:1px solid var(--border2);
-  border-radius:20px;
-  background:var(--card);
-  box-shadow:0 12px 30px #0004;
-  cursor:pointer;
+.card {
+  position: relative;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+
+  background: var(--card);
+
+  box-shadow:
+    0 12px 30px #00000044;
+
+  cursor: pointer;
 }
 
-.card-head{
-  position:relative;
-  min-height:66px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  padding:13px 50px 13px 18px;
-  text-align:center;
+.card-head {
+  position: relative;
+
+  min-height: 72px;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 13px 55px;
+
+  text-align: center;
 }
 
-.card-head::after{
-  content:"⌄";
-  position:absolute;
-  right:17px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#999;
-  font-size:19px;
-  transition:transform .25s ease;
+.card-head::after {
+  content: "⌄";
+
+  position: absolute;
+
+  right: 17px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #999;
+
+  font-size: 19px;
+
+  transition:
+    transform 0.25s ease;
 }
 
-.card.open .card-head::after{
-  transform:translateY(-50%) rotate(180deg);
+.card.open .card-head::after {
+  transform:
+    translateY(-50%)
+    rotate(180deg);
 }
 
-.card-head-label{
-  font-size:15px;
-  font-weight:700;
+.card-head-label,
+.card-head-price {
+  width: 100%;
+
+  text-align: center;
 }
 
-.card-head-price{
-  margin-top:3px;
-  color:#aaa;
-  font-size:12px;
+.card-head-label {
+  font-size: 15px;
+  font-weight: 700;
 }
 
-.card-content{
-  display:none;
-  padding-bottom:4px;
+.card-head-price {
+  margin-top: 3px;
+
+  color: #AAAAAA;
+
+  font-size: 12px;
 }
 
-.card.open .card-content{
-  display:block;
+.card-content {
+  display: none;
+
+  padding-bottom: 4px;
 }
 
-.frame{
-  margin:0 12px;
-  padding:16px 10px 15px;
-  border-radius:16px;
-  background:#eef1f0;
-  box-shadow:inset 0 1px #fff;
+.card.open .card-content {
+  display: block;
 }
 
-.frame svg{
-  display:block;
-  width:100%;
-  height:auto;
-  margin:auto;
+.frame {
+  margin: 0 12px;
+
+  padding: 16px 10px 15px;
+
+  border-radius: 16px;
+
+  background: #EEF1F0;
+
+  box-shadow:
+    inset 0 1px #FFFFFF;
 }
 
-.barcode-price{
-  margin-top:12px;
-  color:#26302d;
-  text-align:center;
-  font-size:28px;
-  font-weight:800;
-  letter-spacing:-.5px;
+.frame svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  margin: auto;
 }
 
-.barcode-label{
-  margin-top:4px;
-  color:#58615e;
-  text-align:center;
-  font-size:12px;
-  font-weight:600;
+.barcode-data {
+  margin-top: 8px;
+
+  color: #6C7571;
+
+  text-align: center;
+
+  font-size: 9px;
+
+  letter-spacing: 0.4px;
+
+  word-break: break-all;
 }
 
-.barcode-data{
-  margin-top:7px;
-  color:#6c7571;
-  text-align:center;
-  font-size:9px;
-  letter-spacing:.4px;
-  word-break:break-all;
+.card-foot {
+  padding: 11px 15px 13px;
+
+  text-align: center;
 }
 
-.card-foot{
-  padding:11px 15px 13px;
-  text-align:center;
+.remove {
+  padding: 7px 15px;
+
+  border: 1px solid var(--border2);
+  border-radius: 9px;
+
+  background: var(--input);
+  color: #FF5967;
+
+  font-size: 12px;
+
+  cursor: pointer;
 }
 
-.remove{
-  padding:7px 15px;
-  border:1px solid var(--border2);
-  border-radius:9px;
-  background:var(--input);
-  color:#ff5967;
-  font-size:12px;
-  cursor:pointer;
+.remove:active {
+  transform: scale(0.96);
 }
 
-.remove:active{
-  transform:scale(.96);
-}
 
 /* =========================
-   FLOATING PLUS
+   FLOATING PLUS BUTTON
 ========================= */
 
-.plus{
-  position:fixed;
-  right:22px;
-  bottom:22px;
-  z-index:30;
-  width:56px;
-  height:56px;
-  border:1px solid var(--bright);
-  border-radius:50%;
-  background:var(--accent);
-  color:white;
-  font-size:30px;
-  line-height:1;
-  cursor:pointer;
+.plus {
+  position: fixed;
+
+  right: 22px;
+  bottom: 22px;
+
+  z-index: 30;
+
+  width: 56px;
+  height: 56px;
+
+  border: 1px solid var(--bright);
+  border-radius: 50%;
+
+  background: var(--accent);
+  color: white;
+
+  font-size: 30px;
+  line-height: 1;
+
+  cursor: pointer;
+
   box-shadow:
-    0 0 12px rgba(var(--rgb),.5),
-    0 12px 30px #0007;
+    0 0 12px rgba(var(--rgb), 0.5),
+    0 12px 30px #00000077;
 }
 
-.plus:active{
-  transform:scale(.94);
+.plus:active {
+  transform: scale(0.94);
 }
+
 
 /* =========================
    SCANNER
 ========================= */
 
-.overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:999;
-  align-items:center;
-  justify-content:center;
-  padding:14px;
-  background:#000d;
-  backdrop-filter:blur(8px);
+.overlay {
+  display: none;
+
+  position: fixed;
+  inset: 0;
+
+  z-index: 999;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 14px;
+
+  background: #000000DD;
+
+  backdrop-filter: blur(8px);
 }
 
-.overlay.open{
-  display:flex;
+.overlay.open {
+  display: flex;
 }
 
-.scanner{
-  width:min(520px,100%);
-  overflow:hidden;
-  border:1px solid var(--border2);
-  border-radius:20px;
-  background:#3A3A3A;
-  box-shadow:0 30px 90px #000;
+.scanner {
+  width: min(520px, 100%);
+
+  overflow: hidden;
+
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+
+  background: #3A3A3A;
+
+  box-shadow:
+    0 30px 90px #000000;
 }
 
-.scanner-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  padding:17px;
+.scanner-head {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  padding: 17px;
 }
 
-.scanner-head h2{
-  margin:0;
-  font-size:18px;
+.scanner-head h2 {
+  margin: 0;
+
+  font-size: 18px;
 }
 
-.scanner-head p{
-  margin:5px 0 0;
-  color:#aaa;
-  font-size:12px;
+.scanner-head p {
+  margin: 5px 0 0;
+
+  color: #AAAAAA;
+
+  font-size: 12px;
 }
 
-.close{
-  width:38px;
-  height:38px;
-  border:1px solid var(--border);
-  border-radius:11px;
-  background:var(--card);
-  color:#ddd;
-  font-size:24px;
-  cursor:pointer;
+.close {
+  width: 38px;
+  height: 38px;
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  background: var(--card);
+  color: #DDDDDD;
+
+  font-size: 24px;
+
+  cursor: pointer;
 }
 
-.camera{
-  position:relative;
-  width:calc(100% - 24px);
-  height:330px;
-  margin:0 12px;
-  overflow:hidden;
-  border-radius:14px;
-  background:#000;
-  border:1px solid var(--border);
+.camera {
+  position: relative;
+
+  width: calc(100% - 24px);
+  height: 330px;
+
+  margin: 0 12px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background: #000000;
 }
 
-#quagga{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
+#quagga {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
 }
 
-#quagga video{
-  display:block;
-  width:100%!important;
-  height:100%!important;
-  object-fit:cover;
+#quagga video {
+  display: block;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: cover;
 }
 
-#quagga canvas{
-  position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
+#quagga canvas {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
 }
 
-.target{
-  position:absolute;
-  left:5%;
-  right:5%;
-  top:50%;
-  height:110px;
-  transform:translateY(-50%);
-  border:2px solid #fff9;
-  border-radius:10px;
-  pointer-events:none;
-  box-shadow:0 0 0 9999px #0002;
+.target {
+  position: absolute;
+
+  left: 5%;
+  right: 5%;
+
+  top: 50%;
+
+  height: 110px;
+
+  transform: translateY(-50%);
+
+  border: 2px solid #FFFFFF99;
+  border-radius: 10px;
+
+  pointer-events: none;
+
+  box-shadow:
+    0 0 0 9999px #00000022;
 }
 
-.target::after{
-  content:"";
-  position:absolute;
-  left:4%;
-  right:4%;
-  top:50%;
-  height:2px;
-  background:#fff;
-  box-shadow:0 0 8px white;
+.target::after {
+  content: "";
+
+  position: absolute;
+
+  left: 4%;
+  right: 4%;
+
+  top: 50%;
+
+  height: 2px;
+
+  background: #FFFFFF;
+
+  box-shadow:
+    0 0 8px #FFFFFF;
 }
 
-.status{
-  min-height:21px;
-  padding:12px 17px 5px;
-  color:#aaa;
-  text-align:center;
-  font-size:13px;
+.status {
+  min-height: 21px;
+
+  padding: 12px 17px 5px;
+
+  color: #AAAAAA;
+
+  text-align: center;
+
+  font-size: 13px;
 }
 
-.status.success{
-  color:var(--bright);
-  font-weight:bold;
-  text-shadow:0 0 9px rgba(var(--rgb),.7);
+.status.success {
+  color: var(--bright);
+
+  font-weight: bold;
+
+  text-shadow:
+    0 0 9px rgba(var(--rgb), 0.7);
 }
 
-.status.error{
-  color:#ff5967;
+.status.error {
+  color: #FF5967;
 }
 
-.tip{
-  padding:5px 17px 16px;
-  color:#858585;
-  font-size:11px;
-  text-align:center;
+.tip {
+  padding: 5px 17px 16px;
+
+  color: #858585;
+
+  font-size: 11px;
+
+  text-align: center;
 }
 
-@media(max-width:430px){
 
-  body{
-    padding-left:10px;
-    padding-right:10px;
+@media (max-width: 430px) {
+
+  body {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
-  .generator{
-    padding:16px;
+  .generator {
+    padding: 16px;
   }
 
-  .plus{
-    right:16px;
-    bottom:16px;
+  .plus {
+    right: 16px;
+    bottom: 16px;
   }
 
-  .camera{
-    height:300px;
+  .camera {
+    height: 300px;
   }
 
 }
@@ -727,6 +971,8 @@ input:focus{
 <body>
 
 <div class="app">
+
+  <!-- Accent picker -->
 
   <div class="top">
 
@@ -738,21 +984,34 @@ input:focus{
       <span class="accent-dot"></span>
     </button>
 
-    <div class="palette" id="palette">
-      <div class="palette-title">Accent colour</div>
-      <div class="colours" id="colours"></div>
+    <div
+      class="palette"
+      id="palette"
+    >
+      <div class="palette-title">
+        Accent colour
+      </div>
+
+      <div
+        class="colours"
+        id="colours"
+      ></div>
     </div>
 
   </div>
+
+
+  <!-- Header -->
 
   <header>
     <h1>PLACEHOLDER1</h1>
     <p>PLACEHOLDER2</p>
   </header>
 
-  <main class="generator">
 
-    <!-- BARCODE -->
+  <!-- Generator -->
+
+  <main class="generator">
 
     <div class="field">
 
@@ -785,7 +1044,7 @@ input:focus{
     </div>
 
 
-    <!-- LABEL -->
+    <!-- Label -->
 
     <div class="field">
 
@@ -796,14 +1055,14 @@ input:focus{
       <input
         id="barcodeLabel"
         type="text"
-        placeholder="Enter label for barcode"
+        placeholder="Add a label to your barcode"
         autocomplete="off"
       >
 
     </div>
 
 
-    <!-- PRICE -->
+    <!-- Price -->
 
     <div class="price-field">
 
@@ -816,8 +1075,13 @@ input:focus{
         id="priceSwipe"
       >
 
-        <div class="swipe-arrow left">←</div>
-        <div class="swipe-arrow right">→</div>
+        <div class="swipe-arrow left">
+          ←
+        </div>
+
+        <div class="swipe-arrow right">
+          →
+        </div>
 
         <div class="price-content">
 
@@ -834,9 +1098,33 @@ input:focus{
 
         </div>
 
-        <div class="swipe-hint">
-          Swipe left or right · full swipe ≈ 50p
-        </div>
+      </div>
+
+
+      <!-- Quick price buttons -->
+
+      <div class="quick-prices">
+
+        <button
+          class="quick-price"
+          data-price="15"
+        >
+          15p
+        </button>
+
+        <button
+          class="quick-price"
+          data-price="20"
+        >
+          20p
+        </button>
+
+        <button
+          class="quick-price"
+          data-price="50"
+        >
+          50p
+        </button>
 
       </div>
 
@@ -859,6 +1147,8 @@ input:focus{
   </main>
 
 
+  <!-- Saved -->
+
   <div class="saved-title">
     Saved Barcodes
   </div>
@@ -880,6 +1170,8 @@ input:focus{
 </div>
 
 
+<!-- Floating plus -->
+
 <button
   class="plus"
   id="plus"
@@ -889,7 +1181,7 @@ input:focus{
 </button>
 
 
-<!-- SCANNER -->
+<!-- Scanner -->
 
 <div
   class="overlay"
@@ -971,45 +1263,48 @@ let lastCodeTime = 0;
 
 const accents = [
 
-  ["#5B5B5B","#FFFFFF"],
+  ["#5B5B5B", "#FFFFFF"],
 
-  ["#8B2028","#D92838"],
-  ["#7A2419","#F04432"],
-  ["#8A4B16","#FF8A24"],
-  ["#75600D","#E8C51A"],
+  ["#8B2028", "#D92838"],
+  ["#7A2419", "#F04432"],
+  ["#8A4B16", "#FF8A24"],
+  ["#75600D", "#E8C51A"],
 
-  ["#39751C","#70E83E"],
-  ["#167044","#32E88A"],
-  ["#116A6A","#25E0DF"],
-  ["#145A86","#28AFFF"],
+  ["#39751C", "#70E83E"],
+  ["#167044", "#32E88A"],
+  ["#116A6A", "#25E0DF"],
+  ["#145A86", "#28AFFF"],
 
-  ["#273E91","#536FFF"],
-  ["#55349B","#965CFF"],
-  ["#762C91","#D24CFF"],
-  ["#8D2869","#FF4DB8"],
+  ["#273E91", "#536FFF"],
+  ["#55349B", "#965CFF"],
+  ["#762C91", "#D24CFF"],
+  ["#8D2869", "#FF4DB8"],
 
-  ["#96304A","#FF4F72"],
-  ["#52651A","#B8E631"],
-  ["#1E7770","#3DFFD9"]
+  ["#96304A", "#FF4F72"],
+  ["#52651A", "#B8E631"],
+  ["#1E7770", "#3DFFD9"]
 
 ];
 
 
-function rgb(hex){
+function rgb(hex) {
 
-  const number = parseInt(
-    hex.slice(1),
-    16
-  );
+  const number =
+    parseInt(hex.slice(1), 16);
 
-  return `${number >> 16},${(number >> 8) & 255},${number & 255}`;
+  return `
+    ${number >> 16},
+    ${(number >> 8) & 255},
+    ${number & 255}
+  `.replace(/\s/g, "");
 
 }
 
 
-function setAccent(index){
+function setAccent(index) {
 
-  const [main, bright] = accents[index];
+  const [main, bright] =
+    accents[index];
 
   document.documentElement.style.setProperty(
     "--accent",
@@ -1026,7 +1321,8 @@ function setAccent(index){
     rgb(bright)
   );
 
-  document.querySelectorAll(".colour")
+  document
+    .querySelectorAll(".colour")
     .forEach((element, i) => {
 
       element.classList.toggle(
@@ -1039,14 +1335,15 @@ function setAccent(index){
 }
 
 
-/* Create palette */
+/* Build palette */
 
 accents.forEach((colour, index) => {
 
   const button =
     document.createElement("button");
 
-  button.className = "colour";
+  button.className =
+    "colour";
 
   button.style.background =
     colour[1];
@@ -1074,23 +1371,25 @@ accents.forEach((colour, index) => {
 setAccent(0);
 
 
-/* Open colour picker */
+/* Palette */
 
-$("accentButton").onclick = event => {
+$("accentButton").onclick =
+  event => {
 
-  event.stopPropagation();
+    event.stopPropagation();
 
-  $("palette")
-    .classList.toggle("open");
+    $("palette")
+      .classList.toggle("open");
 
-};
+  };
 
 
-$("palette").onclick = event => {
+$("palette").onclick =
+  event => {
 
-  event.stopPropagation();
+    event.stopPropagation();
 
-};
+  };
 
 
 document.addEventListener(
@@ -1122,31 +1421,27 @@ productCode.addEventListener(
 
 
 /* =========================
-   PRICE SWIPE SYSTEM
-
-   Full width swipe = ~50p
-
-   No maximum price.
-   Minimum = 0p.
+   PRICE SYSTEM
 ========================= */
 
 let pricePence = 10;
 
 let dragStartX = 0;
-let dragStartPrice = 0;
+let dragStartPrice = 10;
 let dragging = false;
 
 
-/* Format price */
+/* Price display */
 
-function formatPrice(pence){
+function formatPrice(pence) {
 
-  pence = Math.max(
-    0,
-    Math.round(pence)
-  );
+  pence =
+    Math.max(
+      10,
+      Math.round(pence)
+    );
 
-  if(pence < 100){
+  if (pence < 100) {
 
     return `${pence}p`;
 
@@ -1158,24 +1453,27 @@ function formatPrice(pence){
   const pennies =
     pence % 100;
 
-  if(pennies === 0){
+  if (pennies === 0) {
 
     return `£${pounds}`;
 
   }
 
-  return `£${pounds}.${String(pennies).padStart(2, "0")}`;
+  return (
+    `£${pounds}.` +
+    String(pennies).padStart(2, "0")
+  );
 
 }
 
 
-/* Update visual price */
+/* Update price */
 
-function updatePrice(){
+function updatePrice() {
 
   pricePence =
     Math.max(
-      0,
+      10,
       Math.round(pricePence)
     );
 
@@ -1205,11 +1503,30 @@ function updatePrice(){
 updatePrice();
 
 
-/*
-  Pointer events work with both:
-  - iPhone touch
-  - mouse
-*/
+/* Quick prices */
+
+document
+  .querySelectorAll(".quick-price")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        pricePence =
+          Number(
+            button.dataset.price
+          );
+
+        updatePrice();
+
+      }
+    );
+
+  });
+
+
+/* Swipe start */
 
 priceSwipe.addEventListener(
   "pointerdown",
@@ -1227,51 +1544,57 @@ priceSwipe.addEventListener(
       "dragging"
     );
 
-    try{
+    try {
 
       priceSwipe.setPointerCapture(
         event.pointerId
       );
 
-    }catch(e){}
+    } catch (e) {}
 
   }
 );
 
 
+/* Swipe movement */
+
 priceSwipe.addEventListener(
   "pointermove",
   event => {
 
-    if(!dragging)
+    if (!dragging)
       return;
 
     const rect =
       priceSwipe.getBoundingClientRect();
 
     const width =
-      Math.max(rect.width, 1);
+      Math.max(
+        rect.width,
+        1
+      );
 
     const moved =
-      event.clientX - dragStartX;
+      event.clientX -
+      dragStartX;
 
 
     /*
-      One complete width =
-      approximately 50 pence
+      Full swipe ≈ 35p
     */
 
     const change =
-      (moved / width) * 50;
+      (moved / width) * 35;
 
 
     pricePence =
       Math.max(
-        0,
+        10,
         Math.round(
           dragStartPrice + change
         )
       );
+
 
     updatePrice();
 
@@ -1279,9 +1602,9 @@ priceSwipe.addEventListener(
 );
 
 
-function stopPriceDrag(){
+function stopPriceDrag() {
 
-  if(!dragging)
+  if (!dragging)
     return;
 
   dragging = false;
@@ -1308,19 +1631,21 @@ priceSwipe.addEventListener(
    CHECK DIGIT
 ========================= */
 
-function checkDigit(input){
+function checkDigit(input) {
 
   let sum = 0;
 
-  for(
+  for (
     let i = 0;
     i < input.length;
     i++
-  ){
+  ) {
 
     const digit =
       Number(
-        input[input.length - 1 - i]
+        input[
+          input.length - 1 - i
+        ]
       );
 
     sum += digit *
@@ -1333,7 +1658,8 @@ function checkDigit(input){
   }
 
   return (
-    10 - (sum % 10)
+    10 -
+    (sum % 10)
   ) % 10;
 
 }
@@ -1343,7 +1669,7 @@ function checkDigit(input){
    GENERATE BARCODE
 ========================= */
 
-function generateBarcode(){
+function generateBarcode() {
 
   errorBox.style.display =
     "none";
@@ -1352,16 +1678,14 @@ function generateBarcode(){
   const rawProduct =
     productCode.value.trim();
 
-
   const label =
     labelInput.value.trim();
-
 
   const digits =
     rawProduct.replace(/\D/g, "");
 
 
-  if(digits.length < 8){
+  if (digits.length < 8) {
 
     errorBox.textContent =
       "Enter a valid barcode of at least 8 digits.";
@@ -1374,17 +1698,10 @@ function generateBarcode(){
   }
 
 
-  /*
-    Keep max 13 digits.
-
-    If 14-digit data somehow exists,
-    remove its final check digit.
-  */
-
   let productDigits =
     digits;
 
-  if(productDigits.length === 14){
+  if (productDigits.length === 14) {
 
     productDigits =
       productDigits.slice(0, -1);
@@ -1404,25 +1721,25 @@ function generateBarcode(){
 
 
   /*
-    Embedded barcode data:
+    Barcode data:
 
-    91
-    + product code
-    + price in pence
-    + check digit
+    91 prefix
+    Product digits
+    Price in pence
+    Check digit
 
-    Label is NOT embedded.
+    Label is NOT included.
   */
 
   const base =
     `91${productDigits}${paddedPrice}`;
 
-
   const fullBarcode =
-    base + checkDigit(base);
+    base +
+    checkDigit(base);
 
 
-  /* Close all previous cards */
+  /* Close other cards */
 
   document
     .querySelectorAll(".card.open")
@@ -1435,7 +1752,7 @@ function generateBarcode(){
     });
 
 
-  /* Create card */
+  /* Card */
 
   const card =
     document.createElement("div");
@@ -1444,7 +1761,7 @@ function generateBarcode(){
     "card open";
 
 
-  /* Card header */
+  /* Header */
 
   const head =
     document.createElement("div");
@@ -1460,7 +1777,8 @@ function generateBarcode(){
     "card-head-label";
 
   cardLabel.textContent =
-    label || "Untitled Barcode";
+    label ||
+    "Untitled Barcode";
 
 
   const cardPrice =
@@ -1479,7 +1797,7 @@ function generateBarcode(){
   );
 
 
-  /* Card content */
+  /* Content */
 
   const content =
     document.createElement("div");
@@ -1501,35 +1819,10 @@ function generateBarcode(){
       "svg"
     );
 
-
   frame.appendChild(svg);
 
 
-  /* Price below barcode */
-
-  const bigPrice =
-    document.createElement("div");
-
-  bigPrice.className =
-    "barcode-price";
-
-  bigPrice.textContent =
-    formatPrice(pricePence);
-
-
-  /* Label below price */
-
-  const bigLabel =
-    document.createElement("div");
-
-  bigLabel.className =
-    "barcode-label";
-
-  bigLabel.textContent =
-    label || "Untitled Barcode";
-
-
-  /* Barcode data */
+  /* Barcode number appears once */
 
   const barcodeData =
     document.createElement("div");
@@ -1540,10 +1833,7 @@ function generateBarcode(){
   barcodeData.textContent =
     fullBarcode;
 
-
-  frame.append(
-    bigPrice,
-    bigLabel,
+  frame.appendChild(
     barcodeData
   );
 
@@ -1567,18 +1857,21 @@ function generateBarcode(){
     "Remove";
 
 
-  remove.onclick = event => {
+  remove.onclick =
+    event => {
 
-    event.stopPropagation();
+      event.stopPropagation();
 
-    card.remove();
+      card.remove();
 
-    updateEmpty();
+      updateEmpty();
 
-  };
+    };
 
 
-  foot.appendChild(remove);
+  foot.appendChild(
+    remove
+  );
 
 
   content.append(
@@ -1593,7 +1886,7 @@ function generateBarcode(){
   );
 
 
-  /* Accordion behaviour */
+  /* Accordion */
 
   card.onclick = () => {
 
@@ -1614,7 +1907,7 @@ function generateBarcode(){
       });
 
 
-    if(!wasOpen){
+    if (!wasOpen) {
 
       card.classList.add(
         "open"
@@ -1628,37 +1921,33 @@ function generateBarcode(){
   list.prepend(card);
 
 
-  /* Render */
+  /* Draw barcode */
 
-  try{
+  try {
 
     JsBarcode(
       svg,
       fullBarcode,
       {
 
-        format:"CODE128",
+        format: "CODE128",
 
-        displayValue:true,
+        displayValue: false,
 
-        fontSize:16,
+        width: 2,
 
-        width:2,
+        height: 100,
 
-        height:100,
+        margin: 6,
 
-        margin:6,
+        background: "#EEF1F0",
 
-        background:"#f4f4f4",
-
-        lineColor:"#111",
-
-        fontOptions:"bold"
+        lineColor: "#111111"
 
       }
     );
 
-  }catch(renderError){
+  } catch (renderError) {
 
     console.error(renderError);
 
@@ -1668,25 +1957,20 @@ function generateBarcode(){
   }
 
 
-  /* Reset text inputs */
+  /* Reset fields */
 
-  labelInput.value =
-    "";
-
-  productCode.value =
-    "";
+  labelInput.value = "";
+  productCode.value = "";
 
 
   updateEmpty();
 
 
-  /* Scroll to new barcode */
-
   setTimeout(() => {
 
     card.scrollIntoView({
-      behavior:"smooth",
-      block:"center"
+      behavior: "smooth",
+      block: "center"
     });
 
   }, 80);
@@ -1694,19 +1978,21 @@ function generateBarcode(){
 }
 
 
-/* Generate button */
+/* Generate */
 
 $("generate").onclick =
   generateBarcode;
 
 
-/* Enter on product input */
+/* Enter */
 
 productCode.addEventListener(
   "keydown",
   event => {
 
-    if(event.key === "Enter"){
+    if (
+      event.key === "Enter"
+    ) {
 
       generateBarcode();
 
@@ -1723,8 +2009,8 @@ productCode.addEventListener(
 $("plus").onclick = () => {
 
   window.scrollTo({
-    top:0,
-    behavior:"smooth"
+    top: 0,
+    behavior: "smooth"
   });
 
   setTimeout(() => {
@@ -1740,7 +2026,7 @@ $("plus").onclick = () => {
    EMPTY STATE
 ========================= */
 
-function updateEmpty(){
+function updateEmpty() {
 
   empty.style.display =
     list.children.length
@@ -1756,7 +2042,7 @@ updateEmpty();
    CAMERA SCANNER
 ========================= */
 
-function openScanner(){
+function openScanner() {
 
   $("overlay")
     .classList.add("open");
@@ -1768,12 +2054,6 @@ function openScanner(){
     "status";
 
 
-  /*
-    Small delay helps mobile
-    browsers finish rendering
-    before camera initialises.
-  */
-
   setTimeout(
     startScanner,
     100
@@ -1782,9 +2062,12 @@ function openScanner(){
 }
 
 
-function startScanner(){
+function startScanner() {
 
-  if(typeof Quagga === "undefined"){
+  if (
+    typeof Quagga ===
+    "undefined"
+  ) {
 
     $("status").textContent =
       "Scanner library failed to load.";
@@ -1797,10 +2080,10 @@ function startScanner(){
   }
 
 
-  if(
+  if (
     !navigator.mediaDevices ||
     !navigator.mediaDevices.getUserMedia
-  ){
+  ) {
 
     $("status").textContent =
       "This browser cannot access the camera.";
@@ -1818,68 +2101,68 @@ function startScanner(){
 
   Quagga.init({
 
-    inputStream:{
+    inputStream: {
 
-      name:"Live",
+      name: "Live",
 
-      type:"LiveStream",
+      type: "LiveStream",
 
       target:
         document.querySelector(
           "#quagga"
         ),
 
-      constraints:{
+      constraints: {
 
-        facingMode:{
-          ideal:"environment"
+        facingMode: {
+          ideal: "environment"
         },
 
-        width:{
-          min:640,
-          ideal:1280,
-          max:1920
+        width: {
+          min: 640,
+          ideal: 1280,
+          max: 1920
         },
 
-        height:{
-          min:480,
-          ideal:720,
-          max:1080
+        height: {
+          min: 480,
+          ideal: 720,
+          max: 1080
         }
 
       },
 
-      area:{
+      area: {
 
-        top:"8%",
-        right:"4%",
-        left:"4%",
-        bottom:"8%"
+        top: "8%",
+        right: "4%",
+        left: "4%",
+        bottom: "8%"
 
       }
 
     },
 
 
-    locator:{
+    locator: {
 
-      patchSize:"medium",
+      patchSize: "medium",
 
-      halfSample:false
+      halfSample: false
 
     },
 
 
-    frequency:25,
+    frequency: 25,
 
-    numOfWorkers:2,
+    numOfWorkers: 2,
 
-    locate:true,
+    locate: true,
 
 
-    decoder:{
+    decoder: {
 
-      readers:[
+      readers: [
 
         "ean_reader",
 
@@ -1887,15 +2170,13 @@ function startScanner(){
 
       ],
 
-      multiple:false
+      multiple: false
 
     }
 
-
   }, initError => {
 
-
-    if(initError){
+    if (initError) {
 
       console.error(
         "Scanner error:",
@@ -1926,51 +2207,50 @@ function startScanner(){
 
     setTimeout(() => {
 
-      try{
+      try {
 
         const video =
           document.querySelector(
             "#quagga video"
           );
 
-
         const track =
           video?.srcObject
             ?.getVideoTracks?.()[0];
 
 
-        if(
+        if (
           track &&
           track.getCapabilities
-        ){
+        ) {
 
           const capabilities =
             track.getCapabilities();
 
 
-          if(
+          if (
             capabilities.focusMode &&
             capabilities.focusMode.includes(
               "continuous"
             )
-          ){
+          ) {
 
-            track.applyConstraints({
-
-              advanced:[
-                {
-                  focusMode:
-                    "continuous"
-                }
-              ]
-
-            }).catch(() => {});
+            track
+              .applyConstraints({
+                advanced: [
+                  {
+                    focusMode:
+                      "continuous"
+                  }
+                ]
+              })
+              .catch(() => {});
 
           }
 
         }
 
-      }catch(e){}
+      } catch (e) {}
 
     }, 700);
 
@@ -1983,115 +2263,114 @@ function startScanner(){
    DETECTION
 ========================= */
 
-Quagga.onDetected(result => {
+Quagga.onDetected(
+  result => {
 
-  if(
-    !scanning ||
-    !result ||
-    !result.codeResult ||
-    !result.codeResult.code
-  ){
-    return;
+    if (
+      !scanning ||
+      !result ||
+      !result.codeResult ||
+      !result.codeResult.code
+    ) {
+      return;
+    }
+
+
+    const code =
+      String(
+        result.codeResult.code
+      )
+        .replace(/\D/g, "");
+
+
+    const format =
+      result.codeResult.format;
+
+
+    if (
+      format !== "ean_13" &&
+      format !== "ean_8"
+    ) {
+      return;
+    }
+
+
+    if (
+      code.length !== 8 &&
+      code.length !== 13
+    ) {
+      return;
+    }
+
+
+    const now =
+      Date.now();
+
+
+    /* Require repeat detection */
+
+    if (
+      code !== lastCode
+    ) {
+
+      lastCode =
+        code;
+
+      lastCodeTime =
+        now;
+
+      return;
+
+    }
+
+
+    if (
+      now - lastCodeTime < 80
+    ) {
+      return;
+    }
+
+
+    scanning = false;
+
+
+    productCode.value =
+      code.slice(0, 13);
+
+
+    $("status").textContent =
+      "✓ Barcode detected";
+
+
+    $("status").className =
+      "status success";
+
+
+    setTimeout(
+      closeScanner,
+      350
+    );
+
   }
-
-
-  const code =
-    String(
-      result.codeResult.code
-    )
-      .replace(/\D/g, "");
-
-
-  const format =
-    result.codeResult.format;
-
-
-  if(
-    format !== "ean_13" &&
-    format !== "ean_8"
-  ){
-    return;
-  }
-
-
-  if(
-    code.length !== 8 &&
-    code.length !== 13
-  ){
-    return;
-  }
-
-
-  /*
-    Require same code to be seen
-    twice very close together.
-
-    This reduces false scans.
-  */
-
-  const now =
-    Date.now();
-
-
-  if(code !== lastCode){
-
-    lastCode =
-      code;
-
-    lastCodeTime =
-      now;
-
-    return;
-
-  }
-
-
-  if(
-    now - lastCodeTime < 80
-  ){
-    return;
-  }
-
-
-  scanning = false;
-
-
-  productCode.value =
-    code.slice(0, 13);
-
-
-  $("status").textContent =
-    "✓ Barcode detected";
-
-
-  $("status").className =
-    "status success";
-
-
-  setTimeout(
-    closeScanner,
-    350
-  );
-
-});
+);
 
 
 /* =========================
    CAMERA ERRORS
 ========================= */
 
-function cameraError(err){
+function cameraError(err) {
 
   const text =
     String(err || "")
       .toLowerCase();
 
 
-  if(
+  if (
     text.includes("permission") ||
     text.includes("notallowed") ||
     text.includes("denied")
-  ){
+  ) {
 
     return (
       "Camera permission was denied. " +
@@ -2101,9 +2380,9 @@ function cameraError(err){
   }
 
 
-  if(
+  if (
     text.includes("notfound")
-  ){
+  ) {
 
     return (
       "No camera was found."
@@ -2112,10 +2391,10 @@ function cameraError(err){
   }
 
 
-  if(
+  if (
     location.protocol !== "https:" &&
     location.hostname !== "localhost"
-  ){
+  ) {
 
     return (
       "Camera access requires HTTPS."
@@ -2136,20 +2415,23 @@ function cameraError(err){
    CLOSE SCANNER
 ========================= */
 
-function closeScanner(){
+function closeScanner() {
 
   scanning = false;
 
 
-  try{
+  try {
 
-    if(typeof Quagga !== "undefined"){
+    if (
+      typeof Quagga !==
+      "undefined"
+    ) {
 
       Quagga.stop();
 
     }
 
-  }catch(e){}
+  } catch (e) {}
 
 
   $("quagga").innerHTML =
@@ -2160,11 +2442,8 @@ function closeScanner(){
     .classList.remove("open");
 
 
-  lastCode =
-    "";
-
-  lastCodeTime =
-    0;
+  lastCode = "";
+  lastCodeTime = 0;
 
 }
 
@@ -2179,29 +2458,31 @@ $("close").onclick =
   closeScanner;
 
 
-$("overlay").onclick = event => {
+$("overlay").onclick =
+  event => {
 
-  if(
-    event.target === $("overlay")
-  ){
+    if (
+      event.target ===
+      $("overlay")
+    ) {
 
-    closeScanner();
+      closeScanner();
 
-  }
+    }
 
-};
+  };
 
 
-/* Stop camera if app is hidden */
+/* Stop camera when app is hidden */
 
 document.addEventListener(
   "visibilitychange",
   () => {
 
-    if(
+    if (
       document.hidden &&
       scanning
-    ){
+    ) {
 
       closeScanner();
 
@@ -2217,11 +2498,11 @@ document.addEventListener(
   "keydown",
   event => {
 
-    if(
+    if (
       event.key === "Escape" &&
       $("overlay")
         .classList.contains("open")
-    ){
+    ) {
 
       closeScanner();
 
